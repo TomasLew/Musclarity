@@ -1,0 +1,38 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Musclarity" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.Musclarity" parent="Base.Theme.Musclarity" />
+    <style name="SpinnerTextViewItem" parent="@android:style/Widget.TextView" >
+        <item name="android:textSize" >23sp</item>
+        <item name="android:textStyle" >bold</item>
+        <item name="android:textColor" >@color/logoColor</item>
+        <item name="android:letterSpacing" >0.2</item>
+        <item name="android:dividerPadding" >8dp</item>
+    </style>
+    <style name="SpinnerPositionHint" parent="@android:style/Widget.TextView" >
+        <item name="android:textSize" >8pt</item>
+        <item name="android:textStyle" >normal</item>
+        <item name="android:textColor" >@color/grey_hint</item>
+        <item name="android:fontFamily" >@font/montserrat</item>
+        <item name="android:dividerPadding" >15dp</item>
+    </style>
+    <style name="SpinnerPositionItem" parent="@android:style/Widget.TextView" >
+        <item name="android:textSize" >8pt</item>
+        <item name="android:textStyle" >normal</item>
+        <item name="android:textColor" >@color/white</item>
+        <item name="android:fontFamily" >@font/montserrat</item>
+        <item name="android:dividerPadding" >15dp</item>
+    </style>
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/myBackgroundColor</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">@color/logoColor</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/myBackgroundColor</item>
+    </style>
+</resources>

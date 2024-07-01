@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="myBackgroundColor">#0A2A43</color>
+    <color name="logoColor">#EF597A</color>
+    <color name="numColor">#EB96A8</color>
+    <color name="transparente">#00000000</color>
+    <color name="grey">#C6C6C6</color>
+    <color name="grey_hint">#C6C6C6CC</color>
+    <color name="logoColor_transparente">#80EF597A</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorOff">#000000</color>
+    <color name="colorOn">#FF8800</color>
+    <color name="red">#FF0000</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="green">#00FF00</color>
+    <color name="bg_2">#0C3454</color>
+</resources>

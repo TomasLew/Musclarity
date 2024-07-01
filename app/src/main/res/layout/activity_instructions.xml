@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/instructions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InstructionsActivity"
+    android:background="@color/myBackgroundColor">
+
+    <ImageView
+        android:id="@+id/Logo"
+        android:alpha="0.75"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="40dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/m_logo" />
+
+    <ImageView
+        android:id="@+id/back_button"
+        android:padding="2dp"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+
+        android:background="@drawable/arrow_bg"
+        android:importantForAccessibility="no"
+        android:src="@drawable/arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/Logo"
+        app:layout_constraintBottom_toBottomOf="@id/Logo"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:background="@color/transparente"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Logo"
+        android:layout_marginTop="20dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/I"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginBottom="20dp"
+                />
+
+            <TextView
+                android:id="@+id/II"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginBottom="20dp"
+                />
+
+            <TextView
+                android:id="@+id/III"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginBottom="20dp"
+                />
+
+            <ImageView
+                android:id="@+id/posicion_electrodos"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:src="@drawable/instructivo_uso"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <TextView
+                android:id="@+id/IV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginBottom="20dp" />
+
+            <TextView
+                android:id="@+id/V"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginBottom="20dp" />
+
+            <TextView
+                android:id="@+id/VI"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginBottom="15dp" />
+
+            <TextView
+                android:id="@+id/VI_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:id="@+id/VI_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginStart="20dp"
+                />
+
+            <ImageView
+                android:id="@+id/telefonos"
+                android:layout_width="370dp"
+                android:layout_height="300dp"
+                android:src="@drawable/telefonos"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:id="@+id/VI_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:id="@+id/VI_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:fontFamily="@font/montserrat"
+                android:textSize="9pt"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20dp"/>
+
+            <ImageView
+                android:id="@+id/señal_normal"
+                android:layout_width="300dp"
+                android:layout_height="120dp"
+                android:src="@drawable/normal"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"/>
+
+            <ImageView
+                android:id="@+id/señal_defectuosa"
+                android:layout_width="300dp"
+                android:layout_height="120dp"
+                android:src="@drawable/defectuosa"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"/>
+
+            <TextView
+                android:id="@+id/descripcion"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/montserrat"
+                android:text="* Nótese cómo en la señal defectuosa se obtienen picos cuadrados, conocidos como saturaciones. Una señal donde estos aparecen frecuentemente es una señal defectuosa debido al posicionamiento de los electrodos, y requiere que los electrodos se aseguren o vuelvan a colocar."
+                android:justificationMode="inter_word"
+                android:textColor="@color/white"
+                android:textSize="5pt" />
+
+            <TextView
+                android:id="@+id/final1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="@font/montserrat"
+                android:text="¡Listo! Ahora estás preparado para realizar tus actividades mientras los electrodos registran la actividad eléctrica de tu músculo isquiotibial de manera precisa y efectiva."
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="9pt"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/final2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/montserrat"
+                android:text="Disfrutá de Musclarity, disfrutá de tu entrenamiento."
+                android:textAlignment="center"
+                android:textColor="@color/logoColor"
+                android:textSize="8pt" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

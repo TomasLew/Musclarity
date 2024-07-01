@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Musclarity</string>
+    <string name="usclarity">USCLARITY</string>
+    <string name="log_in">Log In</string>
+    <string name="register">Register</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="username_team">Username / Team</string>
+    <string name="add_badge_image">Add Badge Image</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="plus">+</string>
+    <string name="registered_players">Registered Players</string>
+    <string name="add_player">+ Add Player</string>
+    <string name="name">Name</string>
+    <string name="add_player_image">Add Player Image</string>
+    <string-array name="spinner_items">
+        <item>4–4–2</item>
+        <item>4–3–3</item>
+    </string-array>
+    <string-array name="spinner_position_items">
+        <item>Select Position</item>
+        <item>Goalkeeper (GK)</item>
+        <item>Centre Back (CB)</item>
+        <item>Left Back (LB)</item>
+        <item>Right Back (RB)</item>
+        <item>Centre Midfield (CM)</item>
+        <item>Right Midfield (RM)</item>
+        <item>Left Midfield (LM)</item>
+        <item>Striker (ST)</item>
+    </string-array>
+</resources>
