@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1060948724383",
+    "project_id": "musclarity",
+    "storage_bucket": "musclarity.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1060948724383:android:6eb51553b1d73a4eb270aa",
+        "android_client_info": {
+          "package_name": "com.example.musclarity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfiL68eohcTfHDx2zoSpthOgNoJg2YWKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

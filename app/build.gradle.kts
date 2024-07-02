@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
+
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -47,6 +51,7 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,5 +76,6 @@ dependencies {
 
     implementation("org.apache.commons:commons-math3:3.6.1")
 
-
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
 }
