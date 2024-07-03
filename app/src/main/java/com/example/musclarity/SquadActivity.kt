@@ -1,22 +1,29 @@
 package com.example.musclarity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 class SquadActivity : AppCompatActivity() {
+    private lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_squad)
+        firebaseAuth = Firebase.auth
 
         val spinner: Spinner = findViewById(R.id.spinner)
         val logoutButton: ImageView = findViewById(R.id.logout_button)
@@ -39,9 +46,7 @@ class SquadActivity : AppCompatActivity() {
         }
 
         logoutButton.setOnClickListener {
-            // Start the LoginActivity when the loginButton is clicked
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            showLogOutDialog()
         }
 
         // Create an ArrayAdapter using the string array and a default spinner layout.
@@ -116,6 +121,76 @@ class SquadActivity : AppCompatActivity() {
                 // Do nothing if nothing is selected
             }
         }
+    }
+    private fun logOut () {
+        firebaseAuth.signOut()
+
+        // Go to the MainActivity when the logOut is clicked
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun showLogOutDialog() {
+        // Inflate the custom layout
+        val dialogView = layoutInflater.inflate(R.layout.sign_out_banner, null)
+        val btnNO: TextView = dialogView.findViewById(R.id.btnNO)
+        val btnYES: Button = dialogView.findViewById(R.id.btnYES)
+
+        /*
+        // Create the AlertDialog
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+
+        builder.setPositiveButton("YES") { dialog, _ ->
+            dialog.dismiss()
+            logOut()
+        }
+        builder.setNegativeButton("NO") { dialog, _ ->
+            dialog.dismiss()
+        }
+         */
+
+        // Create AlertDialog with custom buttons layout
+        val builder = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false) // Optional: Make dialog non-cancelable by clicking outside
+
+        // Create and show the dialog
+        val dialog = builder.create()
+        btnYES.setOnClickListener {
+            dialog.dismiss()
+            logOut()
+        }
+
+        btnNO.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+
+        // Optionally set dialog window background color
+        dialog.window?.setBackgroundDrawableResource(R.color.myBackgroundColor)
+
+        /*
+        // Show the dialog
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+
+
+        // Retrieve the positive button and apply the custom style
+        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        positiveButton.setBackgroundColor(ContextCompat.getColor(this, R.color.logoColor))
+        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.myBackgroundColor))
+
+        // Retrieve the negative button and apply the custom style
+        val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        negativeButton.setBackgroundColor(ContextCompat.getColor(this, R.color.green_pitch))
+        negativeButton.setTextColor(ContextCompat.getColor(this, R.color.logoColor))
+
+
+        dialog.window?.setBackgroundDrawableResource(R.color.myBackgroundColor)
+
+         */
     }
 }
 
