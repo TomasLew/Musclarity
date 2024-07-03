@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import org.w3c.dom.Text
 import java.io.IOException
 
@@ -32,7 +34,7 @@ class PlayersActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_players2)
-
+        lateinit var auth: FirebaseAuth
         val backButton: ImageView = findViewById(R.id.back_button)
         val spinner: Spinner = findViewById(R.id.position_spinner)
         val uploadButton: TextView = findViewById(R.id.upload_button)
@@ -117,18 +119,36 @@ class PlayersActivity2 : AppCompatActivity() {
 
         // Add player on click
         addPlayerButton.setOnClickListener {
-            val playerName = textName.text.toString()
-            val playerPosition = spinner.selectedItem.toString()
+            auth = FirebaseAuth.getInstance()
+            val db = FirebaseFirestore.getInstance()
 
-            if (playerPosition != "Select Position") {
-                Toast.makeText(this, "Player Added\nName: $playerName\nPosition: $playerPosition", Toast.LENGTH_LONG).show()
+            val user = auth.currentUser
+            if (user != null) {
+                val email = user.email
+                val playerName = textName.text.toString()
+                val playerPosition = spinner.selectedItem.toString()
+                val f0 = 0
 
-                // You can also add logic to save the player data or pass it to another activity here
+                if (playerPosition != "Select Position" && email != null){
+                    val collectionName = "Jugadores - $email"
+                    val data = hashMapOf(
+                        "Nombre" to playerName,
+                        "Posición" to playerPosition,
+                        "F0" to f0
+                    )
 
-                val intent = Intent(this, PlayersActivity::class.java)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show()
+                    db.collection(collectionName)
+                        .add(data)
+                        .addOnSuccessListener { documentReference ->
+                            Toast.makeText(this,"Registro exitoso",Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener{e -> }
+
+                    val intent = Intent(this, PlayersActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

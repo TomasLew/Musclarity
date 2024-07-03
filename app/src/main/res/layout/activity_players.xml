@@ -44,26 +44,44 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_players"
-        android:layout_width="317dp"
-        android:layout_height="318dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="341dp"
+        android:layout_height="430dp"
         app:layout_constraintBottom_toTopOf="@+id/add_player_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.67"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Logo" />
+        app:layout_constraintTop_toBottomOf="@id/registered_players" />
 
     <Button
         android:id="@+id/add_player_button"
         android:layout_width="176dp"
         android:layout_height="65dp"
-        android:layout_marginTop="50dp"
         android:backgroundTint="@color/logoColor"
         android:text="@string/add_player"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintHorizontal_bias="0.855"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recycler_view_players" />
+
+    <TextView
+        android:id="@+id/registered_players"
+        android:layout_width="314dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/underlined"
+        android:fontFamily="@font/montserrat"
+        android:text="Registered Players"
+        android:textColor="#F2FFFFFF"
+        android:textSize="20sp"
+        android:typeface="normal"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_view_players"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Logo"
+        app:layout_constraintVertical_bias="0.55" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
