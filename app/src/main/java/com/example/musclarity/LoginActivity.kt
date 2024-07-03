@@ -8,8 +8,10 @@ import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.Firebase
@@ -33,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
         val textPass: EditText = findViewById(R.id.password)
         val logoColor = ContextCompat.getColor(this, R.color.logoColor)
         val logoColorTransparente = ContextCompat.getColor(this, R.color.logoColor_transparente)
+        val forgotPassword: TextView = findViewById(R.id.olvide_contraseña)
 
         fun updateButtonColor(button: Button) {
             if (button.isEnabled) {
@@ -88,6 +91,10 @@ class LoginActivity : AppCompatActivity() {
             signIn(textEmail.text.toString(), textPass.text.toString())
             //Toast.makeText(this, "Username: ${textEmail.text.toString()}, Password: ${textPass.text.toString()}", Toast.LENGTH_SHORT).show()
         }
+
+        forgotPassword.setOnClickListener {
+            showForgotPasswordDialog()
+        }
     }
 
     private fun signIn(email: String, password: String) {
@@ -104,5 +111,55 @@ class LoginActivity : AppCompatActivity() {
                 toast.show()
             }
         }
+    }
+
+    private fun sendPasswordReset (email : String) {
+        if (email.isNotBlank()) {
+            firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener() { task ->
+                if (task.isSuccessful) {
+                    //Toast.makeText(baseContext, "", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        baseContext,
+                        "Error, the process couldn't be done",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+        else {
+            Toast.makeText(
+                baseContext,
+                "Error, the email is missing",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
+    private fun showForgotPasswordDialog() {
+        // Inflate the custom layout
+        val dialogView = layoutInflater.inflate(R.layout.forgot_password_banner, null)
+        val emailEditText = dialogView.findViewById<EditText>(R.id.email_pass)
+
+        // Create the AlertDialog
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+        builder.setPositiveButton("OK") { dialog, _ ->
+            val email = emailEditText.text.toString()
+            sendPasswordReset(email)
+            dialog.dismiss()
+        }
+
+        // Show the dialog
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+
+        // Retrieve the positive button and apply the custom style
+        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        positiveButton.setBackgroundColor(ContextCompat.getColor(this, R.color.logoColor))
+        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.myBackgroundColor))
+
+        dialog.window?.setBackgroundDrawableResource(R.color.myBackgroundColor)
     }
 }
