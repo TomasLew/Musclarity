@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -114,6 +115,22 @@ class PlayersActivity2 : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        // Add player on click
+        addPlayerButton.setOnClickListener {
+            val playerName = textName.text.toString()
+            val playerPosition = spinner.selectedItem.toString()
+
+            if (playerPosition != "Select Position") {
+                Toast.makeText(this, "Player Added\nName: $playerName\nPosition: $playerPosition", Toast.LENGTH_LONG).show()
+
+                // You can also add logic to save the player data or pass it to another activity here
+
+                val intent = Intent(this, PlayersActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
