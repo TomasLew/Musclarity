@@ -31,6 +31,9 @@
             android:name=".GraphActivity"
             android:exported="false" />
         <activity
+            android:name=".PlayersActivity3"
+            android:exported="false" />
+        <activity
             android:name=".PlayersActivity2"
             android:exported="false" />
         <activity

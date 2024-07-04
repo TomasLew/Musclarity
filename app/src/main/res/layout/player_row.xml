@@ -25,15 +25,11 @@
         android:textColor="@color/white"
         android:textSize="18sp" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <ImageView
         android:id="@+id/options"
-        android:layout_width="100dp"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
-        android:background="@color/ic_launcher_background"
-        android:backgroundTint="@color/transparente"
-        android:src="@drawable/baseline_more_vert_24"
-        android:tint="@color/white"
-        app:backgroundTint="@color/ic_launcher_background"
+        android:src="@drawable/options_button"
         app:fabSize="mini" />
 </TableRow>
 
