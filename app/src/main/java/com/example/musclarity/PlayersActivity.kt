@@ -1,25 +1,18 @@
 package com.example.musclarity
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.UnderlineSpan
 import android.util.Log
-import android.view.LayoutInflater
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.musclarity.R.id.options
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -34,11 +27,33 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
     private val playerList = mutableListOf<Player>()
     private var dataLoaded = false
 
+    private lateinit var sharedPreferences: SharedPreferences
+    private val PREF_NAME = "MyPref"
+    private val KEY_VARIABLE = "variable"
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_players)
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+        val posicionSquad = intent.getStringExtra("posicion")
+
+        if (posicionSquad.isNullOrBlank()) {
+            val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
+            Toast.makeText(baseContext, savedVariable, Toast.LENGTH_SHORT).show()
+        }
+        else {
+            val editor = sharedPreferences.edit()
+            editor.putString(KEY_VARIABLE, posicionSquad)
+            editor.apply()
+
+            val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
+            Toast.makeText(baseContext, savedVariable, Toast.LENGTH_SHORT).show()
+        }
+
 
         auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
@@ -88,7 +103,10 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
         }
 
         backButton.setOnClickListener {
-            val intent = Intent(this, SquadActivity::class.java)
+            val intent = Intent(this, SquadActivity::class.java).apply {
+                val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
+                putExtra("posicion2", savedVariable)
+            }
             startActivity(intent)
         }
 
