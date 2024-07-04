@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import com.google.firebase.auth.auth
 
 class SquadActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,6 +30,11 @@ class SquadActivity : AppCompatActivity() {
         val spinner: Spinner = findViewById(R.id.spinner)
         val logoutButton: ImageView = findViewById(R.id.logout_button)
         val graphButton: ImageView = findViewById(R.id.graph_button)
+        val gk = findViewById<ImageView>(R.id.GK)
+        val dfd = findViewById<ImageView>(R.id.DFD)
+        val dfc1 = findViewById<ImageView>(R.id.DFC1)
+        val dfc2 = findViewById<ImageView>(R.id.DFC2)
+        val dfi = findViewById<ImageView>(R.id.DFI)
         val mc1 = findViewById<ImageView>(R.id.MC1)
         val mc2 = findViewById<ImageView>(R.id.MC2)
         val mco = findViewById<ImageView>(R.id.DC2_MCO)
@@ -40,8 +47,80 @@ class SquadActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        gk.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "gk")
+            }
+            startActivity(intent)
+        }
+
+        dfd.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "dfd")
+            }
+            startActivity(intent)
+        }
+
+        dfc1.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "dfc1")
+            }
+            startActivity(intent)
+        }
+
+        dfc2.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "dfc2")
+            }
+            startActivity(intent)
+        }
+
+        dfi.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "dfi")
+            }
+            startActivity(intent)
+        }
+
+        mc1.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "mc1")
+            }
+            startActivity(intent)
+        }
+
+        mc2.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "mc2")
+            }
+            startActivity(intent)
+        }
+
+        md.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "md")
+            }
+            startActivity(intent)
+        }
+
+        mi.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "mi")
+            }
+            startActivity(intent)
+        }
+
         mco.setOnClickListener {
-            val intent = Intent(this, PlayersActivity::class.java)
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "mco")
+            }
+            startActivity(intent)
+        }
+
+        dc.setOnClickListener {
+            val intent = Intent(this, PlayersActivity::class.java).apply {
+                putExtra("posicion", "dc")
+            }
             startActivity(intent)
         }
 
@@ -120,6 +199,11 @@ class SquadActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Do nothing if nothing is selected
             }
+        }
+
+        val posicion = intent.getStringExtra("posicion2")
+        if (!posicion.isNullOrBlank()) {
+            Toast.makeText(baseContext, posicion, Toast.LENGTH_SHORT).show()
         }
     }
     private fun logOut () {
