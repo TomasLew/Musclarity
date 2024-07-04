@@ -32,39 +32,91 @@
         app:layout_constraintTop_toTopOf="@id/Logo"
         app:layout_constraintBottom_toBottomOf="@id/Logo" />
 
-    <EditText
-        android:id="@+id/player_name"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:padding="5dp"
-        android:hint="@string/name"
-        android:inputType="text"
-        android:selectAllOnFocus="true"
-        android:textColor="@color/white"
-        android:textColorHint="@color/grey_hint"
-        android:textColorHighlight="@color/grey"
-        android:fontFamily="@font/montserrat"
-        android:background="@drawable/text_input_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Logo" />
-
     <TextView
         android:id="@+id/player_img_input"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:padding="5dp"
-        android:text="Add New Player Image"
-        android:textSize="8pt"
-        android:selectAllOnFocus="true"
-        android:textColor="@color/grey_hint"
-        android:fontFamily="@font/montserrat"
+        android:layout_marginTop="12dp"
         android:background="@drawable/text_input_background"
+        android:fontFamily="@font/montserrat"
+        android:padding="5dp"
+        android:selectAllOnFocus="true"
+        android:text="Add New Player Image"
+        android:textColor="@color/grey_hint"
+        android:textSize="8pt"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/position_spinner" />
+
+    <EditText
+        android:id="@+id/player_name"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="176dp"
+        android:background="@drawable/text_input_background"
+        android:fontFamily="@font/montserrat"
+        android:hint="@string/name"
+        android:inputType="text"
+        android:padding="5dp"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/grey"
+        android:textColorHint="@color/grey_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Logo" />
+
+    <Spinner
+        android:id="@+id/position_spinner"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/text_input_background"
+        android:fontFamily="@font/montserrat"
+        android:paddingVertical="5dp"
+        android:popupBackground="@drawable/text_input_background"
+        android:spinnerMode="dropdown"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/grey"
+        android:textColorHint="@color/grey_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/player_name" />
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/logoColor"
+        android:enabled="true"
+        android:fontFamily="@font/montserrat"
+        android:text="Delete"
+        android:textColor="@color/myBackgroundColor"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/player_img_input" />
+
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="56dp"
+        android:backgroundTint="@color/logoColor"
+        android:enabled="true"
+        android:fontFamily="@font/montserrat"
+        android:text="Save"
+        android:textColor="@color/myBackgroundColor"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/player_img_input" />
 
     <ImageView
         android:id="@+id/player_img"
@@ -93,55 +145,6 @@
         app:layout_constraintEnd_toEndOf="@id/player_img_input"
         />
 
-    <Spinner
-        android:id="@+id/position_spinner"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:paddingVertical="5dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/grey_hint"
-        android:textColorHighlight="@color/grey"
-        android:fontFamily="@font/montserrat"
-        android:spinnerMode="dropdown"
-        android:background="@drawable/text_input_background"
-        android:popupBackground="@drawable/text_input_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_name" />
-
-    <Button
-        android:id="@+id/edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="60dp"
-        android:backgroundTint="@color/logoColor"
-        android:enabled="true"
-        android:fontFamily="@font/montserrat"
-        android:text="Save"
-        android:textColor="@color/myBackgroundColor"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_img_input" />
-
-
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/logoColor"
-        android:enabled="true"
-        android:fontFamily="@font/montserrat"
-        android:text = "Delete"
-        android:textColor="@color/myBackgroundColor"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_img_input" />
 
     <ImageView
         android:id="@+id/Logo"
@@ -155,7 +158,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/m_logo" />
 
-
+    <ImageView
+        android:id="@+id/imagen"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/player_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Logo"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -24,12 +25,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import org.w3c.dom.Text
 import java.io.IOException
+import java.util.UUID
 
 class PlayersActivity3 : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
+    private var imageDownloadUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,15 +45,19 @@ class PlayersActivity3 : AppCompatActivity() {
         val backButton: ImageView = findViewById(R.id.back_button)
         val spinner: Spinner = findViewById(R.id.position_spinner)
         val textName: TextView = findViewById(R.id.player_name)
+        imageView = findViewById(R.id.imagen)
         val EditButton: Button = findViewById(R.id.edit_button)
         val DeleteButton: Button = findViewById(R.id.delete_button)
+        val uploadButton: TextView = findViewById(R.id.upload_button)
 
         // Obtener datos del Intent
         val playerName = intent.getStringExtra("player_name")
         val playerPosition = intent.getStringExtra("player_position")
+        val playerUrl = intent.getStringExtra("url")
 
         Log.d("PlayersActivity3", "Player Name: $playerName")
         Log.d("PlayersActivity3", "Player Position: $playerPosition")
+        Log.d("PlayersActivity3", "Player URL: $playerUrl")
 
         // Configurar la vista con los datos recibidos
         if (playerName != null && playerPosition != null) {
@@ -76,12 +85,17 @@ class PlayersActivity3 : AppCompatActivity() {
             textName.text = "Nombre no disponible"
             Log.d("PlayersActivity3", "Player name or position is null")
         }
+        Picasso.get().load(playerUrl).into(imageView)
 
 
         // Move to previous activity on click
         backButton.setOnClickListener {
             val intent1 = Intent(this, PlayersActivity::class.java)
             startActivity(intent1)
+        }
+
+        uploadButton.setOnClickListener {
+            openGallery()
         }
 
         EditButton.setOnClickListener{
@@ -108,11 +122,20 @@ class PlayersActivity3 : AppCompatActivity() {
                             if (!querySnapshot.isEmpty) {
                                 for (document in querySnapshot.documents) {
                                     documentId = document.id
+                                    if (imageDownloadUrl == ""){
+                                        imageDownloadUrl = playerUrl.toString()
+                                    } else {
+                                        Picasso.get().load(imageDownloadUrl).into(imageView)
+                                    }
                                     val data = hashMapOf(
                                         "Nombre" to newplayerName,
                                         "Posición" to newplayerPosition,
-                                        "F0" to f0
+                                        "F0" to f0,
+                                        "url" to imageDownloadUrl
                                     )
+
+                                    Log.d("PlayersActivity3 - DATA", "${data}")
+
                                     col.document(documentId)
                                         .update(data as Map<String, Any>)
                                         .addOnSuccessListener {
@@ -138,87 +161,71 @@ class PlayersActivity3 : AppCompatActivity() {
             }
         }
 
-        /*// Set the hint text color to gray
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (position == 0) {
-                    (parent.getChildAt(0) as? TextView)?.setTextColor(ContextCompat.getColor(applicationContext, R.color.grey_hint))
-                    flagPosition = false
-                    updateButton(flagName, flagPosition, flagImg, addPlayerButton)
-                } else {
-                    (parent.getChildAt(0) as? TextView)?.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
-                    flagPosition = true
-                    updateButton(flagName, flagPosition, flagImg, addPlayerButton)
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing if nothing is selected
-            }
-        }
-
-        // Text change listener for editText1
-        textName.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // Enable the button if both EditText fields are not empty
-                flagName = !s.isNullOrBlank()
-                updateButton(flagName, flagPosition, flagImg, addPlayerButton)
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-        // Add player on click
-        addPlayerButton.setOnClickListener {
+        DeleteButton.setOnClickListener{
             auth = FirebaseAuth.getInstance()
             val db = FirebaseFirestore.getInstance()
-
             val user = auth.currentUser
+
             if (user != null) {
                 val email = user.email
-                val playerName = textName.text.toString()
-                val playerPosition = spinner.selectedItem.toString()
-                val f0 = 0
+                var documentId : String
 
-                if (playerPosition != "Select Position" && email != null){
+                if (email != null){
                     val collectionName = "Jugadores - $email"
-                    val data = hashMapOf(
-                        "Nombre" to playerName,
-                        "Posición" to playerPosition,
-                        "F0" to f0
-                    )
+                    val col = db.collection(collectionName)
 
-                    db.collection(collectionName)
-                        .add(data)
-                        .addOnSuccessListener { documentReference ->
-                            Toast.makeText(this,"Registro exitoso",Toast.LENGTH_SHORT).show()
+                    val query = col
+                        .whereEqualTo("Nombre", playerName)
+                        .whereEqualTo("Posición", playerPosition)
+
+                    query.get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                for (document in querySnapshot.documents) {
+                                    documentId = document.id
+
+                                    col.document(documentId)
+                                        .delete()
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this,"Jugador eliminado exitosamente",Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener{ exception ->
+                                            Toast.makeText(this,"Error en la deleción de datos: " + exception,Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+
+                            } else {
+                                Log.d("Firestore", "No se encontraron documentos con los datos provistos.")
+                            }
                         }
-                        .addOnFailureListener{e -> }
+                        .addOnFailureListener { exception ->
+                            Log.e("Firestore", "Error accediendo a los documentos: ", exception)
+                        }
 
-                    val intent = Intent(this, PlayersActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show()
                 }
+                val intent_prev = Intent(this, PlayersActivity::class.java)
+                startActivity(intent_prev)
+
             }
         }
-
-         */
-
     }
 
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, REQUEST_IMAGE_PICK)
+        startActivityForResult(intent, PlayersActivity3.REQUEST_IMAGE_PICK)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == PlayersActivity3.REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImage = data.data
+
+            uploadImageToFirebase(selectedImage!!, randomString(20)) { imageUrl ->
+                imageDownloadUrl = imageUrl
+                Log.d("Upload", "Image uploaded successfully, URL: $imageDownloadUrl")
+            }
+
             val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage!!))
 
             // Save the bitmap to internal storage
@@ -229,7 +236,15 @@ class PlayersActivity3 : AppCompatActivity() {
 
             imageView.setImageURI(selectedImage)
             imageView.visibility = ImageView.VISIBLE
+
         }
+    }
+
+    private fun randomString(i: Int): String {
+        return UUID.randomUUID()
+            .toString()
+            .replace("-", "")
+            .substring(0, i)
     }
 
     private fun saveToInternalStorage(bitmapImage: Bitmap) {
@@ -240,6 +255,27 @@ class PlayersActivity3 : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    private fun uploadImageToFirebase(imageUri: Uri, playerName: String, callback: (String) -> Unit) {
+
+        val storageReference = FirebaseStorage.getInstance().reference
+        Log.d("storageReference", "${storageReference}")
+        val imageReference = storageReference.child("images/$playerName.jpg")
+        Log.d("imageReference", "${imageReference}")
+
+        imageReference.putFile(imageUri)
+            .addOnSuccessListener {
+                imageReference.downloadUrl.addOnSuccessListener { uri ->
+                    val downloadUrl = uri.toString()
+                    Log.d("uploadImageToFirebase", "Initial URL: $downloadUrl")
+                    callback(downloadUrl)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("uploadImageToFirebase","Error al subir la imagen: ${exception.message}")
+                callback("") // Llamar al callback con un valor vacío en caso de falla
+            }
     }
 
     companion object {

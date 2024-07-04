@@ -71,11 +71,12 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
                             val nombre = document.getString("Nombre")
                             val pos = document.getString("Posición")
                             val F0 = document.getLong("F0")?.toInt()
+                            val url = document.getString("url").toString()
 
-                            Log.d("FirebaseData", "Nombre: $nombre, Posición: $pos")
+                            Log.d("FirebaseData", "Nombre: $nombre, Posición: $pos, URL: $url")
 
                             if (nombre != null && pos != null) {
-                                playerList.add(Player(nombre, pos))
+                                playerList.add(Player(nombre, pos, url))
                             }
                         }
                         playerAdapter.notifyDataSetChanged()
@@ -118,6 +119,7 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
             val intent_edit = Intent(this, PlayersActivity3::class.java)
             intent_edit.putExtra("player_name", myModel.name.toString())
             intent_edit.putExtra("player_position", myModel.position.toString())
+            intent_edit.putExtra("url", myModel.url)
             startActivity(intent_edit)
         } else{
             Log.d("PlayersActivity", "Data is not loaded yet, ignoring click.")

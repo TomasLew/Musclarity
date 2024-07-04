@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -23,45 +25,38 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import org.w3c.dom.Text
 import java.io.IOException
 
 class PlayersActivity2 : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
+    private lateinit var addPlayerButton: Button
+    private var imageDownloadUrl: String = ""
+    private var flagClicked: Boolean = false
+    private var flagImg: Boolean = false
+    private var flagName: Boolean = false
+    private var flagPosition: Boolean = false
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_players2)
-        lateinit var auth: FirebaseAuth
+
+        auth = FirebaseAuth.getInstance()
+        addPlayerButton = findViewById(R.id.register_button)
+
         val backButton: ImageView = findViewById(R.id.back_button)
         val spinner: Spinner = findViewById(R.id.position_spinner)
         val uploadButton: TextView = findViewById(R.id.upload_button)
         val textName: TextView = findViewById(R.id.player_name)
-        val addPlayerButton: Button = findViewById(R.id.register_button)
-        var flagName: Boolean = false
-        var flagPosition: Boolean = false
-        var flagImg: Boolean = false
         imageView = findViewById(R.id.player_img)
-
-        fun updateButton(flag1: Boolean, flag2: Boolean, flag3: Boolean, button: Button) {
-            if (flag1 && flag2 && flag3) {
-                // Set background color when button is enabled
-                button.isEnabled = true
-                button.setBackgroundColor(ContextCompat.getColor(this, R.color.logoColor))// Change to desired color
-            } else {
-                // Set background color when button is disabled
-                button.isEnabled = false
-                button.setBackgroundColor(ContextCompat.getColor(this, R.color.logoColor_transparente)) // Change to desired color
-            }
-        }
 
         uploadButton.setOnClickListener {
             openGallery()
-            flagImg = true
-            updateButton(flagName, flagPosition, flagImg, addPlayerButton)
-        }
+            }
 
         // Move to previous activity on click
         backButton.setOnClickListener {
@@ -118,31 +113,35 @@ class PlayersActivity2 : AppCompatActivity() {
         })
 
         // Add player on click
-        addPlayerButton.setOnClickListener {
-            auth = FirebaseAuth.getInstance()
-            val db = FirebaseFirestore.getInstance()
+        addPlayerButton.setOnClickListener() {
+            flagClicked = true
 
             val user = auth.currentUser
+
             if (user != null) {
                 val email = user.email
                 val playerName = textName.text.toString()
                 val playerPosition = spinner.selectedItem.toString()
                 val f0 = 0
-
+                Log.d("URL", "Image URL: ${imageDownloadUrl}")
                 if (playerPosition != "Select Position" && email != null){
                     val collectionName = "Jugadores - $email"
                     val data = hashMapOf(
                         "Nombre" to playerName,
                         "Posición" to playerPosition,
-                        "F0" to f0
+                        "F0" to f0,
+                        "url" to imageDownloadUrl
                     )
 
+                    val db = FirebaseFirestore.getInstance()
                     db.collection(collectionName)
                         .add(data)
-                        .addOnSuccessListener { documentReference ->
+                        .addOnSuccessListener {
                             Toast.makeText(this,"Registro exitoso",Toast.LENGTH_SHORT).show()
                         }
-                        .addOnFailureListener{e -> }
+                        .addOnFailureListener{e ->
+                            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
 
                     val intent = Intent(this, PlayersActivity::class.java)
                     startActivity(intent)
@@ -152,6 +151,19 @@ class PlayersActivity2 : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun updateButton(flag1: Boolean, flag2: Boolean, flag3: Boolean, button: Button) {
+        if (flag1 && flag2 && flag3) {
+            // Set background color when button is enabled
+            button.isEnabled = true
+            button.setBackgroundColor(ContextCompat.getColor(this, R.color.logoColor))// Change to desired color
+
+        } else {
+            // Set background color when button is disabled
+            button.isEnabled = false
+            button.setBackgroundColor(ContextCompat.getColor(this, R.color.logoColor_transparente)) // Change to desired color
+        }
     }
 
     private fun openGallery() {
@@ -164,6 +176,14 @@ class PlayersActivity2 : AppCompatActivity() {
 
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImage = data.data
+            val textName: TextView = findViewById(R.id.player_name)
+            val name = textName.text.toString()
+
+            uploadImageToFirebase(selectedImage!!, name) { imageUrl ->
+                imageDownloadUrl = imageUrl
+                Log.d("Upload", "Image uploaded successfully, URL: $imageDownloadUrl")
+            }
+
             val bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(selectedImage!!))
 
             // Save the bitmap to internal storage
@@ -174,6 +194,9 @@ class PlayersActivity2 : AppCompatActivity() {
 
             imageView.setImageURI(selectedImage)
             imageView.visibility = ImageView.VISIBLE
+            flagImg = true
+            Log.d("Flags", "Name: $flagName, Pos: $flagPosition, Img: $flagImg")
+            updateButton(flagName, flagPosition, flagImg, addPlayerButton)
         }
     }
 
@@ -185,6 +208,23 @@ class PlayersActivity2 : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    private fun uploadImageToFirebase(imageUri: Uri, playerName: String, callback: (String) -> Unit) {
+        val storageReference = FirebaseStorage.getInstance().reference
+        val imageReference = storageReference.child("images/$playerName.jpg")
+
+        imageReference.putFile(imageUri)
+            .addOnSuccessListener {
+                imageReference.downloadUrl.addOnSuccessListener { uri ->
+                    val downloadUrl = uri.toString()
+                    callback(downloadUrl)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Error al subir la imagen: ${exception.message}", Toast.LENGTH_SHORT).show()
+                callback("") // Llamar al callback con un valor vacío en caso de falla
+            }
     }
 
     companion object {
