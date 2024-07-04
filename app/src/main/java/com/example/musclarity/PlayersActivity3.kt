@@ -138,75 +138,53 @@ class PlayersActivity3 : AppCompatActivity() {
             }
         }
 
-        /*// Set the hint text color to gray
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (position == 0) {
-                    (parent.getChildAt(0) as? TextView)?.setTextColor(ContextCompat.getColor(applicationContext, R.color.grey_hint))
-                    flagPosition = false
-                    updateButton(flagName, flagPosition, flagImg, addPlayerButton)
-                } else {
-                    (parent.getChildAt(0) as? TextView)?.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
-                    flagPosition = true
-                    updateButton(flagName, flagPosition, flagImg, addPlayerButton)
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Do nothing if nothing is selected
-            }
-        }
-
-        // Text change listener for editText1
-        textName.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // Enable the button if both EditText fields are not empty
-                flagName = !s.isNullOrBlank()
-                updateButton(flagName, flagPosition, flagImg, addPlayerButton)
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-        // Add player on click
-        addPlayerButton.setOnClickListener {
+        DeleteButton.setOnClickListener{
             auth = FirebaseAuth.getInstance()
             val db = FirebaseFirestore.getInstance()
-
             val user = auth.currentUser
+
             if (user != null) {
                 val email = user.email
-                val playerName = textName.text.toString()
-                val playerPosition = spinner.selectedItem.toString()
-                val f0 = 0
+                var documentId : String
 
-                if (playerPosition != "Select Position" && email != null){
+                if (email != null){
                     val collectionName = "Jugadores - $email"
-                    val data = hashMapOf(
-                        "Nombre" to playerName,
-                        "Posición" to playerPosition,
-                        "F0" to f0
-                    )
+                    val col = db.collection(collectionName)
 
-                    db.collection(collectionName)
-                        .add(data)
-                        .addOnSuccessListener { documentReference ->
-                            Toast.makeText(this,"Registro exitoso",Toast.LENGTH_SHORT).show()
+                    val query = col
+                        .whereEqualTo("Nombre", playerName)
+                        .whereEqualTo("Posición", playerPosition)
+
+                    query.get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                for (document in querySnapshot.documents) {
+                                    documentId = document.id
+
+                                    col.document(documentId)
+                                        .delete()
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this,"Jugador eliminado exitosamente",Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener{ exception ->
+                                            Toast.makeText(this,"Error en la deleción de datos: " + exception,Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+
+                            } else {
+                                Log.d("Firestore", "No se encontraron documentos con los datos provistos.")
+                            }
                         }
-                        .addOnFailureListener{e -> }
+                        .addOnFailureListener { exception ->
+                            Log.e("Firestore", "Error accediendo a los documentos: ", exception)
+                        }
 
-                    val intent = Intent(this, PlayersActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show()
                 }
+                val intent_prev = Intent(this, PlayersActivity::class.java)
+                startActivity(intent_prev)
+
             }
         }
-
-         */
-
     }
 
     private fun openGallery() {
