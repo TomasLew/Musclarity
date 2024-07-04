@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 class PlayerAdapter(private val itemClickListener: OnItemClickListener, private val context: Context, private val playerList: List<Player>) :
     RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
@@ -14,6 +16,7 @@ class PlayerAdapter(private val itemClickListener: OnItemClickListener, private 
         inner class PlayerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val playerName: TextView = view.findViewById(R.id.player_name)
             val playerPosition: TextView = view.findViewById(R.id.player_position)
+
             init {
                 view.setOnClickListener{
                     val position = adapterPosition

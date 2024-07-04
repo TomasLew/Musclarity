@@ -79,4 +79,7 @@ dependencies {
 
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
+    implementation("com.google.firebase:firebase-storage:20.0.0")
+
+    implementation("com.squareup.picasso:picasso:2.71828")
 }
