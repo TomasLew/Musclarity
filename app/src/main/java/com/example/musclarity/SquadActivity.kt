@@ -31,17 +31,50 @@ class SquadActivity : AppCompatActivity() {
         val spinner: Spinner = findViewById(R.id.spinner)
         val logoutButton: ImageView = findViewById(R.id.logout_button)
         val graphButton: ImageView = findViewById(R.id.graph_button)
+
         val gk = findViewById<ImageView>(R.id.GK)
+        val e_gk = findViewById<GradientProgressBar>(R.id.energy_GK)
+        e_gk.visibility = View.INVISIBLE
+
         val dfd = findViewById<ImageView>(R.id.DFD)
+        val e_dfd = findViewById<GradientProgressBar>(R.id.energy_DFD)
+        e_dfd.visibility = View.INVISIBLE
+
         val dfc1 = findViewById<ImageView>(R.id.DFC1)
+        val e_dfc1 = findViewById<GradientProgressBar>(R.id.energy_DFC1)
+        e_dfc1.visibility = View.INVISIBLE
+
         val dfc2 = findViewById<ImageView>(R.id.DFC2)
+        val e_dfc2 = findViewById<GradientProgressBar>(R.id.energy_DFC2)
+        e_dfc2.visibility = View.INVISIBLE
+
         val dfi = findViewById<ImageView>(R.id.DFI)
+        val e_dfi = findViewById<GradientProgressBar>(R.id.energy_DFI)
+        e_dfi.visibility = View.INVISIBLE
+
         val mc1 = findViewById<ImageView>(R.id.MC1)
+        val e_mc1 = findViewById<GradientProgressBar>(R.id.energy_MC1)
+        e_mc1.visibility = View.INVISIBLE
+
         val mc2 = findViewById<ImageView>(R.id.MC2)
+        val e_mc2 = findViewById<GradientProgressBar>(R.id.energy_MC2)
+        e_mc2.visibility = View.INVISIBLE
+
         val mco = findViewById<ImageView>(R.id.DC2_MCO)
+        val e_mco = findViewById<GradientProgressBar>(R.id.energy_DC2_MCO)
+        e_mco.visibility = View.INVISIBLE
+
         val mi = findViewById<ImageView>(R.id.MI)
+        val e_mi = findViewById<GradientProgressBar>(R.id.energy_MI)
+        e_mi.visibility = View.INVISIBLE
+
         val md = findViewById<ImageView>(R.id.MD)
+        val e_md = findViewById<GradientProgressBar>(R.id.energy_MD)
+        e_md.visibility = View.INVISIBLE
+
         val dc = findViewById<ImageView>(R.id.DC1)
+        val e_dc = findViewById<GradientProgressBar>(R.id.energy_DC1)
+        e_dc.visibility = View.INVISIBLE
 
         graphButton.setOnClickListener {
             val intent = Intent(this, GraphActivity::class.java)
@@ -210,57 +243,49 @@ class SquadActivity : AppCompatActivity() {
 
             if (squadPosition.toString() == "gk") {
                 Picasso.get().load(playerURL).into(gk)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_gk.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "dfd") {
                 Picasso.get().load(playerURL).into(dfd)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_dfd.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "dfc1") {
                 Picasso.get().load(playerURL).into(dfc1)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_dfc1.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "dfc2") {
                 Picasso.get().load(playerURL).into(dfc2)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_dfc2.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "dfi") {
                 Picasso.get().load(playerURL).into(dfi)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_dfi.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "mc2") {
                 Picasso.get().load(playerURL).into(mc2)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_mc2.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "mc1") {
                 Picasso.get().load(playerURL).into(mc1)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_mc1.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "md") {
                 Picasso.get().load(playerURL).into(md)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
-            }
+                e_md.visibility = View.VISIBLE            }
 
             if (squadPosition.toString() == "mi") {
                 Picasso.get().load(playerURL).into(mi)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+                e_mi.visibility = View.VISIBLE
             }
 
             if (squadPosition.toString() == "dc") {
                 Picasso.get().load(playerURL).into(dc)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+                e_dc.visibility = View.VISIBLE
             }
 
             if (squadPosition.toString() == "mco") {
                 Picasso.get().load(playerURL).into(mco)
-                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+                e_mco.visibility = View.VISIBLE
             }
         }
     }
