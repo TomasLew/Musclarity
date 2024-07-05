@@ -43,10 +43,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/m_logo" />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/GK"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/player_slot"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -65,18 +66,18 @@
         app:layout_constraintEnd_toEndOf="@id/GK"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/DFC1"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.76"
         app:layout_constraintHorizontal_bias="0.67"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.76"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_DFC1"
@@ -88,10 +89,11 @@
         app:layout_constraintEnd_toEndOf="@id/DFC1"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/DFC2"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/player_slot"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -111,18 +113,18 @@
         app:layout_constraintEnd_toEndOf="@id/DFC2"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/DFD"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.7"
         app:layout_constraintHorizontal_bias="0.97"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_DFD"
@@ -134,18 +136,18 @@
         app:layout_constraintEnd_toEndOf="@id/DFD"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/DFI"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.7"
         app:layout_constraintHorizontal_bias="0.03"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_DFI"
@@ -157,18 +159,18 @@
         app:layout_constraintEnd_toEndOf="@id/DFI"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/MC1"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.52"
         app:layout_constraintHorizontal_bias="0.67"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.52"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_MC1"
@@ -180,18 +182,18 @@
         app:layout_constraintEnd_toEndOf="@id/MC1"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/MC2"
-        android:layout_width="83dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:layout_width="60dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.52"
         app:layout_constraintHorizontal_bias="0.33"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.52"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_MC2"
@@ -203,18 +205,18 @@
         app:layout_constraintEnd_toEndOf="@id/MC2"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/MD"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.46"
         app:layout_constraintHorizontal_bias="0.97"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.46"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_MD"
@@ -226,18 +228,18 @@
         app:layout_constraintEnd_toEndOf="@id/MD"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/MI"
-        android:layout_width="83dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:layout_width="60dp"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.46"
         app:layout_constraintHorizontal_bias="0.03"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.46"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_MI"
@@ -249,10 +251,11 @@
         app:layout_constraintEnd_toEndOf="@id/MI"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/DC1"
-        android:layout_width="83dp"
         android:layout_height="83dp"
+        android:layout_width="60dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/player_slot"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -272,18 +275,18 @@
         app:layout_constraintEnd_toEndOf="@id/DC1"
         />
 
-    <ImageView
+    <com.example.musclarity.CustomShapeImageView
         android:id="@+id/DC2_MCO"
-        android:layout_width="83dp"
+        android:layout_width="60dp"
         android:layout_height="83dp"
-        app:srcCompat="@drawable/player_slot"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.28"
         app:layout_constraintHorizontal_bias="0.33"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.28"
+        app:srcCompat="@drawable/player_slot" />
 
     <com.example.musclarity.GradientProgressBar
         android:id="@+id/energy_DC2_MCO"
@@ -313,13 +316,13 @@
         android:id="@+id/graph_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/graph"
         android:background="@drawable/logout_bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/Logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        android:src="@drawable/graph"
         app:layout_constraintBottom_toBottomOf="@id/Logo"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/Logo" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
