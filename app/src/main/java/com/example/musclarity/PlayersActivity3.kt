@@ -7,11 +7,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
@@ -20,14 +16,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
-import org.w3c.dom.Text
 import java.io.IOException
 import java.util.UUID
 
@@ -49,15 +41,18 @@ class PlayersActivity3 : AppCompatActivity() {
         val EditButton: Button = findViewById(R.id.edit_button)
         val DeleteButton: Button = findViewById(R.id.delete_button)
         val uploadButton: TextView = findViewById(R.id.upload_button)
+        val addButton: Button = findViewById(R.id.add_button)
 
         // Obtener datos del Intent
         val playerName = intent.getStringExtra("player_name")
         val playerPosition = intent.getStringExtra("player_position")
         val playerUrl = intent.getStringExtra("url")
+        val squadPosition = intent.getStringExtra("squad_position")
 
         Log.d("PlayersActivity3", "Player Name: $playerName")
         Log.d("PlayersActivity3", "Player Position: $playerPosition")
         Log.d("PlayersActivity3", "Player URL: $playerUrl")
+        Log.d("PlayersActivity3", "Selected Squad Position: $squadPosition")
 
         // Configurar la vista con los datos recibidos
         if (playerName != null && playerPosition != null) {
@@ -206,6 +201,74 @@ class PlayersActivity3 : AppCompatActivity() {
                 val intent_prev = Intent(this, PlayersActivity::class.java)
                 startActivity(intent_prev)
 
+            }
+        }
+
+        addButton.setOnClickListener {
+            auth = FirebaseAuth.getInstance()
+            val db = FirebaseFirestore.getInstance()
+
+            val user = auth.currentUser
+            if (user != null) {
+                val email = user.email
+                val newplayerName = textName.text.toString()
+                val newplayerPosition = spinner.selectedItem.toString()
+                val f0 = 0
+                var documentId : String
+
+                if (playerPosition != "Select Position" && email != null){
+                    val collectionName = "Jugadores - $email"
+                    val col = db.collection(collectionName)
+                    val query = col
+                        .whereEqualTo("Nombre", playerName)
+                        .whereEqualTo("Posición", playerPosition)
+
+                    query.get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                for (document in querySnapshot.documents) {
+                                    documentId = document.id
+                                    if (imageDownloadUrl == ""){
+                                        imageDownloadUrl = playerUrl.toString()
+                                    } else {
+                                        Picasso.get().load(imageDownloadUrl).into(imageView)
+                                    }
+                                    val data = hashMapOf(
+                                        "Nombre" to newplayerName,
+                                        "Posición" to newplayerPosition,
+                                        "F0" to f0,
+                                        "url" to imageDownloadUrl
+                                    )
+
+                                    Log.d("PlayersActivity3 - DATA", "${data}")
+
+                                    col.document(documentId)
+                                        .update(data as Map<String, Any>)
+                                        /*
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this,"Actualización exitosa",Toast.LENGTH_SHORT).show()
+                                        }
+                                        .addOnFailureListener{ exception ->
+                                            Toast.makeText(this,"Error en la actualización de datos: " + exception,Toast.LENGTH_SHORT).show()
+                                        }
+
+                                         */
+                                }
+
+                            } else {
+                                Log.d("Firestore", "No se encontraron documentos con los datos provistos")
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e("Firestore", "Error accediendo a los documentos: ", exception)
+                        }
+
+                }
+                val intent_back = Intent(this, SquadActivity::class.java)
+                intent_back.putExtra("player_name", newplayerName)
+                intent_back.putExtra("player_url", playerUrl)
+                intent_back.putExtra("squad_position", squadPosition)
+                startActivity(intent_back)
             }
         }
     }

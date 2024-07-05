@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.squareup.picasso.Picasso
 
 class SquadActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
@@ -201,9 +202,66 @@ class SquadActivity : AppCompatActivity() {
             }
         }
 
-        val posicion = intent.getStringExtra("posicion2")
-        if (!posicion.isNullOrBlank()) {
-            Toast.makeText(baseContext, posicion, Toast.LENGTH_SHORT).show()
+        val squadPosition = intent.getStringExtra("squad_position")
+        val playerName = intent.getStringExtra("player_name")
+        val playerURL = intent.getStringExtra("player_url")
+        if (!squadPosition.isNullOrBlank()) {
+            Toast.makeText(baseContext, "$squadPosition: $playerName", Toast.LENGTH_SHORT).show()
+
+            if (squadPosition.toString() == "gk") {
+                Picasso.get().load(playerURL).into(gk)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "dfd") {
+                Picasso.get().load(playerURL).into(dfd)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "dfc1") {
+                Picasso.get().load(playerURL).into(dfc1)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "dfc2") {
+                Picasso.get().load(playerURL).into(dfc2)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "dfi") {
+                Picasso.get().load(playerURL).into(dfi)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "mc2") {
+                Picasso.get().load(playerURL).into(mc2)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "mc1") {
+                Picasso.get().load(playerURL).into(mc1)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "md") {
+                Picasso.get().load(playerURL).into(md)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "mi") {
+                Picasso.get().load(playerURL).into(mi)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "dc") {
+                Picasso.get().load(playerURL).into(dc)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
+
+            if (squadPosition.toString() == "mco") {
+                Picasso.get().load(playerURL).into(mco)
+                //Toast.makeText(baseContext, playerURL, Toast.LENGTH_SHORT).show()
+            }
         }
     }
     private fun logOut () {

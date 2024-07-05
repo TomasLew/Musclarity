@@ -104,10 +104,7 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
         }
 
         backButton.setOnClickListener {
-            val intent = Intent(this, SquadActivity::class.java).apply {
-                val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
-                putExtra("posicion2", savedVariable)
-            }
+            val intent = Intent(this, SquadActivity::class.java)
             startActivity(intent)
         }
 
@@ -117,9 +114,11 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
         if (dataLoaded && playerList.size > 0) {
             Log.d("PlayersActivity", "Clicked on player: ${myModel.name}, Position: ${myModel.position}")
             val intent_edit = Intent(this, PlayersActivity3::class.java)
+            val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
             intent_edit.putExtra("player_name", myModel.name.toString())
             intent_edit.putExtra("player_position", myModel.position.toString())
             intent_edit.putExtra("url", myModel.url)
+            intent_edit.putExtra("squad_position", savedVariable)
             startActivity(intent_edit)
         } else{
             Log.d("PlayersActivity", "Data is not loaded yet, ignoring click.")
