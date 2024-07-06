@@ -176,10 +176,16 @@ class PlayersActivity2 : AppCompatActivity() {
 
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImage = data.data
+            auth = FirebaseAuth.getInstance()
+            val user = auth.currentUser
+            val email = user?.email
+
             val textName: TextView = findViewById(R.id.player_name)
             val name = textName.text.toString()
 
-            uploadImageToFirebase(selectedImage!!, name) { imageUrl ->
+            val photoname = "${email.toString()}_${name}"
+
+            uploadImageToFirebase(selectedImage!!, photoname) { imageUrl ->
                 imageDownloadUrl = imageUrl
                 Log.d("Upload", "Image uploaded successfully, URL: $imageDownloadUrl")
             }
