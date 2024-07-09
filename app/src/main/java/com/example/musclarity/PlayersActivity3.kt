@@ -22,18 +22,19 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import java.io.IOException
 import java.util.UUID
+import android.content.Context as Context1
 
 class PlayersActivity3 : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
     private var imageDownloadUrl: String = ""
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_players3)
 
-        lateinit var auth: FirebaseAuth
         val backButton: ImageView = findViewById(R.id.back_button)
         val spinner: Spinner = findViewById(R.id.position_spinner)
         val textName: TextView = findViewById(R.id.player_name)
@@ -178,6 +179,7 @@ class PlayersActivity3 : AppCompatActivity() {
                             if (!querySnapshot.isEmpty) {
                                 for (document in querySnapshot.documents) {
                                     documentId = document.id
+                                    val actUrl = document.getString("url") // Usa getString() para obtener el campo como String
 
                                     col.document(documentId)
                                         .delete()
@@ -187,6 +189,12 @@ class PlayersActivity3 : AppCompatActivity() {
                                         .addOnFailureListener{ exception ->
                                             Toast.makeText(this,"Error en la deleción de datos: " + exception,Toast.LENGTH_SHORT).show()
                                         }
+
+                                    if (actUrl != null) {
+                                        deleteImageFromFirebaseStorage(actUrl)
+                                    } else {
+                                        Log.d("Player deletion","The corresponding image could not be deleted because the url was not found.")
+                                    }
                                 }
 
                             } else {
@@ -198,8 +206,7 @@ class PlayersActivity3 : AppCompatActivity() {
                         }
 
                 }
-                val intent_prev = Intent(this, PlayersActivity::class.java)
-                startActivity(intent_prev)
+
 
             }
         }
@@ -280,11 +287,19 @@ class PlayersActivity3 : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        val email = user?.email
+        val textName: TextView = findViewById(R.id.player_name)
+        val name = textName.text.toString()
+
+        val photoname = "${email.toString()}_${name}"
+        Log.d("Upload", "Photoname: $photoname")
 
         if (requestCode == PlayersActivity3.REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImage = data.data
 
-            uploadImageToFirebase(selectedImage!!, randomString(20)) { imageUrl ->
+            uploadImageToFirebase(selectedImage!!, photoname) { imageUrl ->
                 imageDownloadUrl = imageUrl
                 Log.d("Upload", "Image uploaded successfully, URL: $imageDownloadUrl")
             }
@@ -340,6 +355,20 @@ class PlayersActivity3 : AppCompatActivity() {
                 callback("") // Llamar al callback con un valor vacío en caso de falla
             }
     }
+
+    fun deleteImageFromFirebaseStorage(imageUrl: String) {
+        val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+        storageReference.delete()
+            .addOnSuccessListener {
+                // Archivo eliminado exitosamente
+                Log.d("Delete Old Image from Firebase:","Success")
+            }
+            .addOnFailureListener { exception ->
+                // Manejar la falla
+                Log.d("Delete Old Image from Firebase:","Error: ${exception.message}")
+                }
+    }
+
 
     companion object {
         private const val REQUEST_IMAGE_PICK = 1
