@@ -324,5 +324,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/Logo" />
 
+    <TextView
+        android:id="@+id/clear_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+
+
+        android:text="clear"
+        android:textSize="15sp"
+        android:textColor="@color/logoColor"
+        android:background="@drawable/spinner_bg2"
+        android:textAlignment="center"
+
+        android:fontFamily="@font/montserrat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintBottom_toBottomOf="@id/spinner"
+        app:layout_constraintTop_toTopOf="@id/spinner"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

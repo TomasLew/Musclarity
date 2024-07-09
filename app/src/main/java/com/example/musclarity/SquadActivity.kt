@@ -1,6 +1,8 @@
 package com.example.musclarity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -22,11 +24,16 @@ import com.squareup.picasso.Picasso
 class SquadActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
 
+    private lateinit var sharedPreferences: SharedPreferences
+    private val PREF_NAME = "MyPref"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_squad)
         firebaseAuth = Firebase.auth
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
         val spinner: Spinner = findViewById(R.id.spinner)
         val logoutButton: ImageView = findViewById(R.id.logout_button)
@@ -235,12 +242,25 @@ class SquadActivity : AppCompatActivity() {
             }
         }
 
-        val squadPosition = intent.getStringExtra("squad_position")
-        val playerName = intent.getStringExtra("player_name")
-        val playerURL = intent.getStringExtra("player_url")
-        if (!squadPosition.isNullOrBlank()) {
-            Toast.makeText(baseContext, "$squadPosition: $playerName", Toast.LENGTH_SHORT).show()
+        val squadPosition_i = intent.getStringExtra("squad_position")
+        val playerName_i = intent.getStringExtra("player_name")
+        val playerURL_i = intent.getStringExtra("player_url")
+        if (!squadPosition_i.isNullOrBlank()) {
+            Toast.makeText(baseContext, "$squadPosition_i: $playerName_i", Toast.LENGTH_SHORT).show()
 
+            val editor = sharedPreferences.edit()
+            editor.putString("playerName", playerName_i)
+            editor.putString("squadPosition", squadPosition_i)
+            editor.putString("playerURL", playerURL_i)
+            editor.apply()
+
+        }
+
+        val squadPosition = sharedPreferences.getString("squadPosition", "")
+        val playerName = sharedPreferences.getString("playerName", "")
+        val playerURL = sharedPreferences.getString("playerURL", "")
+
+        if (!squadPosition.isNullOrBlank()) {
             if (squadPosition.toString() == "gk") {
                 Picasso.get().load(playerURL).into(gk)
                 e_gk.visibility = View.VISIBLE            }
@@ -287,6 +307,18 @@ class SquadActivity : AppCompatActivity() {
                 Picasso.get().load(playerURL).into(mco)
                 e_mco.visibility = View.VISIBLE
             }
+        }
+
+        val clearBtn = findViewById<TextView>(R.id.clear_btn)
+        clearBtn.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putString("playerName", "")
+            editor.putString("squadPosition", "")
+            editor.putString("playerURL", "")
+            editor.apply()
+
+            val intent = Intent(this, SquadActivity::class.java)
+            startActivity(intent)
         }
     }
     private fun logOut () {
