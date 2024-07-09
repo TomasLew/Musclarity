@@ -5,7 +5,9 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
@@ -28,15 +30,14 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
-import kotlin.math.round
 import kotlin.math.pow
+import kotlin.math.round
 
 class GraphActivity : AppCompatActivity() {
 
@@ -68,11 +69,19 @@ class GraphActivity : AppCompatActivity() {
     // Fatigue Bar
     private lateinit var fatigueBar: GradientProgressBar
 
+    // SHARED PREFERENCES
+    private lateinit var sharedPreferences: SharedPreferences
+    private val PREF_NAME = "MyPref"
+    private val KEY_VARIABLE = "deviceName"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
         enableEdgeToEdge()
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
 
         // UI Initialization
         val buttonConnect = findViewById<Button>(R.id.buttonConnect)
@@ -131,6 +140,7 @@ class GraphActivity : AppCompatActivity() {
 
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = intent.getStringExtra("deviceName")
+
         if (deviceName != null) {
             // Get the device address to make BT Connection
             deviceAddress = intent.getStringExtra("deviceAddress")
@@ -157,11 +167,10 @@ class GraphActivity : AppCompatActivity() {
             private fun handleConnectingStatus(msg: Message) {
                 when (msg.arg1) {
                     1 -> {
-                        toolbar.subtitle = "Connected to $deviceName"
-                        progressBar.visibility = View.GONE
-                        buttonConnect.isEnabled = true
-                        buttonToggle.isEnabled = true
-                        buttonToggle.setBackgroundColor(logoColor)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("deviceName", deviceName)
+                        editor.putString("deviceAddress",deviceAddress)
+                        editor.apply()
                     }
                     -1 -> {
                         toolbar.subtitle = "Device fails to connect"
@@ -173,6 +182,14 @@ class GraphActivity : AppCompatActivity() {
             }
 
             private fun handleMessageRead(msg: Message) {
+                val deviceName = sharedPreferences.getString("deviceName", "")
+                if (!deviceName.isNullOrBlank()) {
+                    toolbar.subtitle = "Connected to $deviceName"
+                    progressBar.visibility = View.GONE
+                    buttonConnect.isEnabled = true
+                    buttonToggle.isEnabled = true
+                    buttonToggle.setBackgroundColor(logoColor)
+                }
                 val arduinoMsg = msg.obj.toString() // Leer mensaje desde Arduino
                 if (buttonToggle.text == "Turn On") {
                     handleTurnOnState()
