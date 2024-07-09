@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Handler
 import android.content.SharedPreferences
+import android.widget.ImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
@@ -30,9 +31,8 @@ class CalibActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.calibration_activity)
 
-        // Ejemplo de inicio de la actividad de gráfico desde calibración
         val buttonToggle: Button = findViewById(R.id.button_toggle)
-        var information_handler = GraphActivity.handler
+        val backButton: ImageView = findViewById(R.id.button_back)
         val instructionsTextView: TextView = findViewById(R.id.instructions_text)
 
         val step1 = getString(R.string.step1)
@@ -46,9 +46,9 @@ class CalibActivity : AppCompatActivity() {
         instructionsTextView.text = instructions
 
         val infoPlayers = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
-        val playerName : String  = infoPlayers.getString("Player", "").toString()
+        val playerName: String = infoPlayers.getString("Player", "").toString()
 
-        var documentId : String
+        var documentId: String
 
         if (intent.getBooleanExtra("calibrationSuccess", false)) {
             Toast.makeText(this, "Calibration exitosa", Toast.LENGTH_SHORT).show()
@@ -69,9 +69,9 @@ class CalibActivity : AppCompatActivity() {
         val F0txt = intent.getStringExtra("F0")
         if (!F0txt.isNullOrBlank()) {
             val F0 = F0txt.toFloat()
+            Log.d("Frecuencia registrada", "$F0")
             if (F0 != 0f) {
                 val auth = FirebaseAuth.getInstance()
-                Log.d("Frecuencia registrada", "$F0")
                 val user = auth.currentUser
                 if (user != null) {
                     val userId = user.uid
@@ -95,7 +95,7 @@ class CalibActivity : AppCompatActivity() {
                                         .addOnSuccessListener {
                                             Toast.makeText(
                                                 this,
-                                                "Calibración exitosa!: $isCalibrating",
+                                                "Calibración exitosa!",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
@@ -104,59 +104,38 @@ class CalibActivity : AppCompatActivity() {
                                             // Manejar errores
                                             Toast.makeText(
                                                 this,
-                                                "Error al actualizar F0: $isCalibrating",
+                                                "Error al actualizar F0: ${e}",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
-
-                                    Log.d("PlayersActivity3 - DATA", "${data}")
-
-                                    col.document(documentId)
-                                        .update(data as Map<String, Any>)
-                                        .addOnSuccessListener {
-                                            Toast.makeText(this,"Actualización exitosa",Toast.LENGTH_SHORT).show()
-                                        }
-                                        .addOnFailureListener{ exception ->
-                                            Toast.makeText(this,"Error en la actualización de datos: " + exception,Toast.LENGTH_SHORT).show()
-                                        }
                                 }
-                    docRef.update("F0", F0)
-                        .addOnSuccessListener {
-                            Toast.makeText(
-                                this,
-                                "Calibración exitosa!: $isCalibrating",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
 
-                        .addOnFailureListener { e ->
-                            // Manejar errores
-                            Toast.makeText(
-                                this,
-                                "Error al actualizar F0: $isCalibrating",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            } else {
+                                Log.e("Error", "Error processing data")
+
+
+                            }
 
                         }
-
                 } else {
-                    Log.e("Error", "Error processing data")
-
-
+                    Toast.makeText(
+                        this,
+                        "F0 registrada es 0, volver a calibrar: $isCalibrating",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
-
-
             }
-            else{
-                Toast.makeText(
-                    this,
-                    "F0 registrada es 0, volver a calibrar: $isCalibrating",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        }
 
+        // Move to squad activity on click
+        backButton.setOnClickListener {
+            val intent1 = Intent(this, PlayersActivity::class.java)
+            startActivity(intent1)
         }
     }
+
 }
+
+
 

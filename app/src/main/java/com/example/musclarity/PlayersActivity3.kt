@@ -106,6 +106,7 @@ class PlayersActivity3 : AppCompatActivity() {
             val sharedPreferences_player = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
             val editor_player: SharedPreferences.Editor = sharedPreferences_player.edit()
             editor_player.putString("Player", playerName)
+            editor_player.putBoolean("flag", true)
             editor_player.apply()
             val intent2 = Intent(this, CalibActivity::class.java)
             startActivity(intent2)

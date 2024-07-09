@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -68,15 +69,17 @@ class GraphActivity : AppCompatActivity() {
 
     private val WINDOW_SIZE_SECONDS = 30
     private val WINDOW_OVERLAP_PERCENTAGE = 0.5
-    private val SAMPLE_RATE = 250.0
+    private val SAMPLE_RATE = 180.0
     private val LOW_CUTOFF = 10.0
     private val HIGH_CUTOFF = 120.0
-    private val Calib_window=20
+    private val Calib_window=90
+    var f_0 : Int = 0
 
     // Fatigue Bar
     private lateinit var fatigueBar: GradientProgressBar
     private lateinit var calibActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var sharedPreferences: SharedPreferences
+    lateinit var auth: FirebaseAuth
 
 //    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
 //        if (key == "flag") {
@@ -91,18 +94,6 @@ class GraphActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
         enableEdgeToEdge()
-
-        val bandera: SharedPreferences =
-            getSharedPreferences("MySharedPref", Context.MODE_PRIVATE)
-        val isCalibrating: Boolean = bandera.getBoolean("flag", false)
-        Log.d("Esta calibrando jose", "${isCalibrating}")
-
-//        sharedPreferences = getSharedPreferences("MySharedPref", Context.MODE_PRIVATE)
-//        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
-//        val isCalibrating = sharedPreferences.getBoolean("flag", false)
-//        Log.d("Esta calibrando jose", "$isCalibrating")
-
-
 
 
 
@@ -138,11 +129,31 @@ class GraphActivity : AppCompatActivity() {
         var i: Int = 0
         var t: Float = 0f
         var fatigue: Int = 100
-        var f_0: Float = 50f
+
+        auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        val infoPlayers = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
+        val playerName: String = infoPlayers.getString("Player", "").toString()
+
+        if (user != null) {
+            var documentId: String
+            val email = user.email
+            val db = FirebaseFirestore.getInstance()
+            val collectionName = "Jugadores - $email"
+            val col = db.collection(collectionName)
+            val query = col
+                .whereEqualTo("Nombre", playerName)
+            query.get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        for (document in querySnapshot.documents) {
+                            f_0 = document.getLong("F0")?.toInt()!!
+                        }
+                    }
+                }
+        }
+
         var counter=0f
-
-
-
 
         val fatigueTxt: TextView = findViewById(R.id.fatigue_txt)
         fatigueBar = findViewById(R.id.fatigue_bar)
@@ -228,6 +239,12 @@ class GraphActivity : AppCompatActivity() {
             }
 
             fun handleTurnOnState() {
+                mpLineChart.axisLeft.apply {
+                    axisMinimum = 0f // Límite mínimo
+                    axisMaximum = 1023f // Límite máximo
+                }
+                mpLineChart.axisRight.isEnabled = false // Desactiva el eje derecho si no lo necesitas
+
                 imageView.setBackgroundColor(resources.getColor(R.color.transparente))
                 //textViewInfo.text = ""
                 lineDataSet.clear()
@@ -246,6 +263,7 @@ class GraphActivity : AppCompatActivity() {
                 if (n % 100 == 0) {
                     val Fs = x / 100
                     textViewInfo.text = "Arduino Message : $arduinoMsg, x : $Fs"
+                    Log.d("Valores", "Arduino Message : $arduinoMsg, x : $Fs")
                     x = 0f
                 }
 
@@ -273,11 +291,7 @@ class GraphActivity : AppCompatActivity() {
 
                     med_dataSet.add(value.toDouble())
 
-                    val bandera: SharedPreferences =
-                        getSharedPreferences("MySharedPref", Context.MODE_PRIVATE)
-                    val isCalibrating: Boolean = bandera.getBoolean("flag", false)
-                    Log.d("Esta calibrando jose", "${isCalibrating}")
-                    processMedianAndFatigue(isCalibrating,Calib_window)
+                    processMedianAndFatigue("MyPlayerPref",Calib_window)
                 }
 
                 if (lineDataSet.entryCount > 10 * fs) {
@@ -291,11 +305,17 @@ class GraphActivity : AppCompatActivity() {
                 }
             }
 
-            private fun processMedianAndFatigue(isCalib: Boolean, calibWindow: Int) {
+            private fun processMedianAndFatigue(CalibKey: String, calibWindow: Int) {
                 val deltaTimeSeconds = (System.currentTimeMillis() - med_lastTimestamp) / 1000.0
                 var ventana = WINDOW_SIZE_SECONDS
 
+                val bandera: SharedPreferences =
+                    getSharedPreferences(CalibKey, Context.MODE_PRIVATE)
+                val isCalib: Boolean = bandera.getBoolean("flag", false)
+                // Log.d("Esta calibrando jose", "${isCalib}")
+
                 if (isCalib) {
+                    val prev : Boolean = true
                     Log.d("Se actualiza la ventana","true")
                     ventana = calibWindow
                     fatigueBar.visibility = View.INVISIBLE
@@ -333,7 +353,7 @@ class GraphActivity : AppCompatActivity() {
                                 // Calcular el porcentaje de fatiga
                                 val fatiguePercentage = signalProcessingUtils.percFatigue(
                                     medians.average(),
-                                    maxFrec = f_0
+                                    maxFrec = f_0.toFloat()
                                 )
                                 Log.d("Fatigue Percentage", fatiguePercentage.toString())
 
@@ -351,8 +371,8 @@ class GraphActivity : AppCompatActivity() {
                                     }
                                     fatigue_perc_unique.add(fatiguePercentage.toInt())
                                 } else {
-                                    f_0 = medians[0].toFloat()
-                                    if (f_0 == 0f) {
+                                    f_0 = medians[0].toInt()
+                                    if (f_0 == 0) {
                                         counter -= 1
                                     }
                                     Log.d("F0", f_0.toString())
@@ -370,37 +390,16 @@ class GraphActivity : AppCompatActivity() {
                             } catch (e: Exception) {
                                 Log.e("Error", "Error processing data: ${e.message}", e)
                             }
-                        }
+                        } else {
 
-
-                        else{
-
-//                            val auth = FirebaseAuth.getInstance()
-//                            val user = auth.currentUser
-//                            if (user != null) {
-//                                val userId = user.uid
-//                                val email = user.email
-//                                Log.d("UserID", "El ID del usuario es: $userId")
-//                                val db = FirebaseFirestore.getInstance()
-//                                val collectionName = "Jugadores - $email"
-//                                val docRef = db.collection(collectionName).document(userId)
-//
-//                                docRef.update("F0", medians[0])
-//                                    .addOnSuccessListener {
-//                                        lanzarCalibActivity()
-//                                    }
-//                                    .addOnFailureListener { e ->
-//                                        // Manejar errores
-//                                    }
-//                            } else {
-//                                Log.e("Error", "Error processing data")
-//
-//                            }
+                            val editor_f: SharedPreferences.Editor = bandera.edit()
+                            editor_f.putBoolean("flag", false)
+                            editor_f.apply()
 
                             val intent3 = Intent(this@GraphActivity, CalibActivity::class.java)
-                            intent3.putExtra("F0", "5")
+                            intent3.putExtra("F0", medians[0].toString())
                             startActivity(intent3)
-//                            medians[0].toString()
+
                         }
 
                     } catch (e: Exception) {
