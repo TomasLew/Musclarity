@@ -22,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import java.io.IOException
 import java.util.UUID
+import android.content.Context as Context1
 
 class PlayersActivity3 : AppCompatActivity() {
 
@@ -205,8 +206,7 @@ class PlayersActivity3 : AppCompatActivity() {
                         }
 
                 }
-                val intent_prev = Intent(this, PlayersActivity::class.java)
-                startActivity(intent_prev)
+
 
             }
         }
