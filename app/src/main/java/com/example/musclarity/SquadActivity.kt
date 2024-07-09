@@ -1,6 +1,8 @@
 package com.example.musclarity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -17,9 +19,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.squareup.picasso.Picasso
 
 class SquadActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private val PREF_NAME = "MyPref"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,20 +33,55 @@ class SquadActivity : AppCompatActivity() {
         setContentView(R.layout.activity_squad)
         firebaseAuth = Firebase.auth
 
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
         val spinner: Spinner = findViewById(R.id.spinner)
         val logoutButton: ImageView = findViewById(R.id.logout_button)
         val graphButton: ImageView = findViewById(R.id.graph_button)
+
         val gk = findViewById<ImageView>(R.id.GK)
+        val e_gk = findViewById<GradientProgressBar>(R.id.energy_GK)
+        e_gk.visibility = View.INVISIBLE
+
         val dfd = findViewById<ImageView>(R.id.DFD)
+        val e_dfd = findViewById<GradientProgressBar>(R.id.energy_DFD)
+        e_dfd.visibility = View.INVISIBLE
+
         val dfc1 = findViewById<ImageView>(R.id.DFC1)
+        val e_dfc1 = findViewById<GradientProgressBar>(R.id.energy_DFC1)
+        e_dfc1.visibility = View.INVISIBLE
+
         val dfc2 = findViewById<ImageView>(R.id.DFC2)
+        val e_dfc2 = findViewById<GradientProgressBar>(R.id.energy_DFC2)
+        e_dfc2.visibility = View.INVISIBLE
+
         val dfi = findViewById<ImageView>(R.id.DFI)
+        val e_dfi = findViewById<GradientProgressBar>(R.id.energy_DFI)
+        e_dfi.visibility = View.INVISIBLE
+
         val mc1 = findViewById<ImageView>(R.id.MC1)
+        val e_mc1 = findViewById<GradientProgressBar>(R.id.energy_MC1)
+        e_mc1.visibility = View.INVISIBLE
+
         val mc2 = findViewById<ImageView>(R.id.MC2)
+        val e_mc2 = findViewById<GradientProgressBar>(R.id.energy_MC2)
+        e_mc2.visibility = View.INVISIBLE
+
         val mco = findViewById<ImageView>(R.id.DC2_MCO)
+        val e_mco = findViewById<GradientProgressBar>(R.id.energy_DC2_MCO)
+        e_mco.visibility = View.INVISIBLE
+
         val mi = findViewById<ImageView>(R.id.MI)
+        val e_mi = findViewById<GradientProgressBar>(R.id.energy_MI)
+        e_mi.visibility = View.INVISIBLE
+
         val md = findViewById<ImageView>(R.id.MD)
+        val e_md = findViewById<GradientProgressBar>(R.id.energy_MD)
+        e_md.visibility = View.INVISIBLE
+
         val dc = findViewById<ImageView>(R.id.DC1)
+        val e_dc = findViewById<GradientProgressBar>(R.id.energy_DC1)
+        e_dc.visibility = View.INVISIBLE
 
         graphButton.setOnClickListener {
             val intent = Intent(this, GraphActivity::class.java)
@@ -201,9 +242,83 @@ class SquadActivity : AppCompatActivity() {
             }
         }
 
-        val posicion = intent.getStringExtra("posicion2")
-        if (!posicion.isNullOrBlank()) {
-            Toast.makeText(baseContext, posicion, Toast.LENGTH_SHORT).show()
+        val squadPosition_i = intent.getStringExtra("squad_position")
+        val playerName_i = intent.getStringExtra("player_name")
+        val playerURL_i = intent.getStringExtra("player_url")
+        if (!squadPosition_i.isNullOrBlank()) {
+            Toast.makeText(baseContext, "$squadPosition_i: $playerName_i", Toast.LENGTH_SHORT).show()
+
+            val editor = sharedPreferences.edit()
+            editor.putString("playerName", playerName_i)
+            editor.putString("squadPosition", squadPosition_i)
+            editor.putString("playerURL", playerURL_i)
+            editor.apply()
+
+        }
+
+        val squadPosition = sharedPreferences.getString("squadPosition", "")
+        val playerName = sharedPreferences.getString("playerName", "")
+        val playerURL = sharedPreferences.getString("playerURL", "")
+
+        if (!squadPosition.isNullOrBlank()) {
+            if (squadPosition.toString() == "gk") {
+                Picasso.get().load(playerURL).into(gk)
+                e_gk.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "dfd") {
+                Picasso.get().load(playerURL).into(dfd)
+                e_dfd.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "dfc1") {
+                Picasso.get().load(playerURL).into(dfc1)
+                e_dfc1.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "dfc2") {
+                Picasso.get().load(playerURL).into(dfc2)
+                e_dfc2.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "dfi") {
+                Picasso.get().load(playerURL).into(dfi)
+                e_dfi.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "mc2") {
+                Picasso.get().load(playerURL).into(mc2)
+                e_mc2.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "mc1") {
+                Picasso.get().load(playerURL).into(mc1)
+                e_mc1.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "md") {
+                Picasso.get().load(playerURL).into(md)
+                e_md.visibility = View.VISIBLE            }
+
+            if (squadPosition.toString() == "mi") {
+                Picasso.get().load(playerURL).into(mi)
+                e_mi.visibility = View.VISIBLE
+            }
+
+            if (squadPosition.toString() == "dc") {
+                Picasso.get().load(playerURL).into(dc)
+                e_dc.visibility = View.VISIBLE
+            }
+
+            if (squadPosition.toString() == "mco") {
+                Picasso.get().load(playerURL).into(mco)
+                e_mco.visibility = View.VISIBLE
+            }
+        }
+
+        val clearBtn = findViewById<TextView>(R.id.clear_btn)
+        clearBtn.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putString("playerName", "")
+            editor.putString("squadPosition", "")
+            editor.putString("playerURL", "")
+            editor.apply()
+
+            val intent = Intent(this, SquadActivity::class.java)
+            startActivity(intent)
         }
     }
     private fun logOut () {

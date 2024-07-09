@@ -43,8 +43,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
-import kotlin.math.round
 import kotlin.math.pow
+import kotlin.math.round
 
 class GraphActivity : AppCompatActivity() {
 
@@ -89,11 +89,18 @@ class GraphActivity : AppCompatActivity() {
 //    }
 
 
+    // SHARED PREFERENCES
+    private val PREF_NAME = "MyPref"
+    private val KEY_VARIABLE = "deviceName"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
         enableEdgeToEdge()
+
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
 
 
@@ -179,6 +186,7 @@ class GraphActivity : AppCompatActivity() {
 
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = intent.getStringExtra("deviceName")
+
         if (deviceName != null) {
             // Get the device address to make BT Connection
             deviceAddress = intent.getStringExtra("deviceAddress")
@@ -208,11 +216,10 @@ class GraphActivity : AppCompatActivity() {
             private fun handleConnectingStatus(msg: Message) {
                 when (msg.arg1) {
                     1 -> {
-                        toolbar.subtitle = "Connected to $deviceName"
-                        progressBar.visibility = View.GONE
-                        buttonConnect.isEnabled = true
-                        buttonToggle.isEnabled = true
-                        buttonToggle.setBackgroundColor(logoColor)
+                        val editor = sharedPreferences.edit()
+                        editor.putString("deviceName", deviceName)
+                        editor.putString("deviceAddress",deviceAddress)
+                        editor.apply()
                     }
 
                     -1 -> {
@@ -225,8 +232,19 @@ class GraphActivity : AppCompatActivity() {
             }
 
             private fun handleMessageRead(msg: Message) {
+
                 val arduinoMsg = msg.obj.toString() // Leer mensaje desde
                 handleDataProcessing(arduinoMsg)
+
+
+                val deviceName = sharedPreferences.getString("deviceName", "")
+                if (!deviceName.isNullOrBlank()) {
+                    toolbar.subtitle = "Connected to $deviceName"
+                    progressBar.visibility = View.GONE
+                    buttonConnect.isEnabled = true
+                    buttonToggle.isEnabled = true
+                    buttonToggle.setBackgroundColor(logoColor)
+                }
 
                 if (buttonToggle.text == "Turn On") {
                     handleTurnOnState()
@@ -309,8 +327,7 @@ class GraphActivity : AppCompatActivity() {
                 val deltaTimeSeconds = (System.currentTimeMillis() - med_lastTimestamp) / 1000.0
                 var ventana = WINDOW_SIZE_SECONDS
 
-                val bandera: SharedPreferences =
-                    getSharedPreferences(CalibKey, Context.MODE_PRIVATE)
+                val bandera = getSharedPreferences(CalibKey, Context.MODE_PRIVATE)
                 val isCalib: Boolean = bandera.getBoolean("flag", false)
                 // Log.d("Esta calibrando jose", "${isCalib}")
 
@@ -392,7 +409,7 @@ class GraphActivity : AppCompatActivity() {
                             }
                         } else {
 
-                            val editor_f: SharedPreferences.Editor = bandera.edit()
+                            val editor_f = bandera.edit()
                             editor_f.putBoolean("flag", false)
                             editor_f.apply()
 
