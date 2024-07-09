@@ -2,6 +2,7 @@ package com.example.musclarity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
@@ -20,7 +21,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -30,6 +34,9 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -62,15 +69,27 @@ class GraphActivity : AppCompatActivity() {
 
     private val WINDOW_SIZE_SECONDS = 30
     private val WINDOW_OVERLAP_PERCENTAGE = 0.5
-    private val SAMPLE_RATE = 250.0
+    private val SAMPLE_RATE = 180.0
     private val LOW_CUTOFF = 10.0
     private val HIGH_CUTOFF = 120.0
+    private val Calib_window=90
+    var f_0 : Int = 0
 
     // Fatigue Bar
     private lateinit var fatigueBar: GradientProgressBar
+    private lateinit var calibActivityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var sharedPreferences: SharedPreferences
+    lateinit var auth: FirebaseAuth
+
+//    private val preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+//        if (key == "flag") {
+//            val isCalibrating = prefs.getBoolean("flag", false)
+//            Log.d("Esta calibrando jose", "$isCalibrating")
+//        }
+//    }
+
 
     // SHARED PREFERENCES
-    private lateinit var sharedPreferences: SharedPreferences
     private val PREF_NAME = "MyPref"
     private val KEY_VARIABLE = "deviceName"
 
@@ -80,7 +99,9 @@ class GraphActivity : AppCompatActivity() {
         setContentView(R.layout.activity_graph)
         enableEdgeToEdge()
 
+
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
 
 
         // UI Initialization
@@ -115,7 +136,30 @@ class GraphActivity : AppCompatActivity() {
         var i: Int = 0
         var t: Float = 0f
         var fatigue: Int = 100
-        var f_0: Float = 50f
+
+        auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+        val infoPlayers = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
+        val playerName: String = infoPlayers.getString("Player", "").toString()
+
+        if (user != null) {
+            var documentId: String
+            val email = user.email
+            val db = FirebaseFirestore.getInstance()
+            val collectionName = "Jugadores - $email"
+            val col = db.collection(collectionName)
+            val query = col
+                .whereEqualTo("Nombre", playerName)
+            query.get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        for (document in querySnapshot.documents) {
+                            f_0 = document.getLong("F0")?.toInt()!!
+                        }
+                    }
+                }
+        }
+
         var counter=0f
 
         val fatigueTxt: TextView = findViewById(R.id.fatigue_txt)
@@ -138,6 +182,8 @@ class GraphActivity : AppCompatActivity() {
             startActivity(intent1)
         }
 
+
+
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = intent.getStringExtra("deviceName")
 
@@ -157,10 +203,13 @@ class GraphActivity : AppCompatActivity() {
         val signalProcessingUtils = SignalProcessingUtils()
 
         handler = object : Handler(Looper.getMainLooper()) {
+
+
             override fun handleMessage(msg: Message) {
                 when (msg.what) {
                     CONNECTING_STATUS -> handleConnectingStatus(msg)
                     MESSAGE_READ -> handleMessageRead(msg)
+
                 }
             }
 
@@ -172,6 +221,7 @@ class GraphActivity : AppCompatActivity() {
                         editor.putString("deviceAddress",deviceAddress)
                         editor.apply()
                     }
+
                     -1 -> {
                         toolbar.subtitle = "Device fails to connect"
                         progressBar.visibility = View.GONE
@@ -182,6 +232,11 @@ class GraphActivity : AppCompatActivity() {
             }
 
             private fun handleMessageRead(msg: Message) {
+
+                val arduinoMsg = msg.obj.toString() // Leer mensaje desde
+                handleDataProcessing(arduinoMsg)
+
+
                 val deviceName = sharedPreferences.getString("deviceName", "")
                 if (!deviceName.isNullOrBlank()) {
                     toolbar.subtitle = "Connected to $deviceName"
@@ -190,26 +245,35 @@ class GraphActivity : AppCompatActivity() {
                     buttonToggle.isEnabled = true
                     buttonToggle.setBackgroundColor(logoColor)
                 }
-                val arduinoMsg = msg.obj.toString() // Leer mensaje desde Arduino
+
                 if (buttonToggle.text == "Turn On") {
                     handleTurnOnState()
+
+                    mpLineChart.visibility = View.INVISIBLE
                 } else {
-                    handleDataProcessing(arduinoMsg)
+                    //handleDataProcessing(arduinoMsg)
+                    mpLineChart.visibility = View.VISIBLE
                 }
             }
 
-            private fun handleTurnOnState() {
+            fun handleTurnOnState() {
+                mpLineChart.axisLeft.apply {
+                    axisMinimum = 0f // Límite mínimo
+                    axisMaximum = 1023f // Límite máximo
+                }
+                mpLineChart.axisRight.isEnabled = false // Desactiva el eje derecho si no lo necesitas
+
                 imageView.setBackgroundColor(resources.getColor(R.color.transparente))
-                textViewInfo.text = ""
+                //textViewInfo.text = ""
                 lineDataSet.clear()
                 lineData.notifyDataChanged()
                 mpLineChart.notifyDataSetChanged()
                 mpLineChart.invalidate()
-                n = 0
-                x = 0f
+                //n = 0
+                //x = 0f
             }
 
-            private fun handleDataProcessing(arduinoMsg: String) {
+            fun handleDataProcessing(arduinoMsg: String) {
                 imageView.setBackgroundColor(resources.getColor(R.color.logoColor))
                 val timePassed: Float = ((System.currentTimeMillis() - lastTimestamp).toFloat())
                 x += timePassed
@@ -217,10 +281,12 @@ class GraphActivity : AppCompatActivity() {
                 if (n % 100 == 0) {
                     val Fs = x / 100
                     textViewInfo.text = "Arduino Message : $arduinoMsg, x : $Fs"
+                    Log.d("Valores", "Arduino Message : $arduinoMsg, x : $Fs")
                     x = 0f
                 }
 
                 val value = arduinoMsg.toFloatOrNull()
+
                 if (value != null) {
                     val entry = Entry(n.toFloat() / fs, value)
                     lineDataSet.addEntry(entry)
@@ -230,21 +296,20 @@ class GraphActivity : AppCompatActivity() {
                         fs_array.add(timePassed)
                     }
                     n += 1
-                    if (medians_unique.size > 0){
+                    if (medians_unique.size > 0) {
                         median_freq_DS.add(medians_unique.last())
-                    }
-                    else{
+                    } else {
                         median_freq_DS.add(0.toDouble())
                     }
-                    if (fatigue_perc_unique.size > 0){
+                    if (fatigue_perc_unique.size > 0) {
                         fatigue_perc_DS.add(fatigue_perc_unique.last())
-                    }
-                    else{
+                    } else {
                         fatigue_perc_DS.add(100)
                     }
 
                     med_dataSet.add(value.toDouble())
-                    processMedianAndFatigue()
+
+                    processMedianAndFatigue("MyPlayerPref",Calib_window)
                 }
 
                 if (lineDataSet.entryCount > 10 * fs) {
@@ -258,28 +323,37 @@ class GraphActivity : AppCompatActivity() {
                 }
             }
 
-            private fun processMedianAndFatigue() {
+            private fun processMedianAndFatigue(CalibKey: String, calibWindow: Int) {
                 val deltaTimeSeconds = (System.currentTimeMillis() - med_lastTimestamp) / 1000.0
+                var ventana = WINDOW_SIZE_SECONDS
 
+                val bandera = getSharedPreferences(CalibKey, Context.MODE_PRIVATE)
+                val isCalib: Boolean = bandera.getBoolean("flag", false)
+                // Log.d("Esta calibrando jose", "${isCalib}")
 
-                if (deltaTimeSeconds >= WINDOW_SIZE_SECONDS) {
+                if (isCalib) {
+                    val prev : Boolean = true
+                    Log.d("Se actualiza la ventana","true")
+                    ventana = calibWindow
+                    fatigueBar.visibility = View.INVISIBLE
+                    fatigueTxt.visibility = View.INVISIBLE
+                }
+
+                if (deltaTimeSeconds >= ventana) {
                     try {
-                        //val filter = ButterworthFilter(SAMPLE_RATE)
-                        //filter.bandPass(2, LOW_CUTOFF, HIGH_CUTOFF)
-                        //val filteredData = filter.filter(med_dataSet.toDoubleArray())
+                        // Preparar los datos originales
                         val originalData = med_dataSet.toDoubleArray()
                         val originalLength = originalData.size
-                        val desiredLength =
-                            signalProcessingUtils.nextPowerOfTwo(originalLength) // Encuentra la próxima potencia de 2 mayor o igual que el tamaño original
+                        val desiredLength = signalProcessingUtils.nextPowerOfTwo(originalLength)
                         val paddedData = DoubleArray(desiredLength)
 
-                        // Copia los datos originales al principio del array acolchado
+                        // Copiar los datos originales y rellenar con ceros
                         System.arraycopy(originalData, 0, paddedData, 0, originalLength)
-
-                        // Rellena el resto del array acolchado con ceros
                         for (l in originalLength until desiredLength) {
                             paddedData[l] = 0.0
                         }
+
+                        // Procesar los datos para obtener las medianas
                         val medians = signalProcessingUtils.process(
                             paddedData,
                             1,
@@ -289,50 +363,74 @@ class GraphActivity : AppCompatActivity() {
                             HIGH_CUTOFF
                         )
                         medians_unique.add(medians[0])
-                        val fatiguePercentage =
-                            signalProcessingUtils.percFatigue(medians.average(), maxFrec = f_0)
-                        Log.d("Fatigue Percentage", fatiguePercentage.toString())
 
-                        if (counter != 0f) {
-                            runOnUiThread {
-                                fatigueBar.setPercentage(fatiguePercentage.toInt())
-                                fatigueTxt.text = "Energy: ${fatiguePercentage}%"
-                                if (fatiguePercentage.toInt() < 50) {
-                                    showAlertDialog2()
-                                    fatigue_flag2 = true
-                                }
-                                else if (fatiguePercentage.toInt() < 75) {
-                                    showAlertDialog()
-                                    fatigue_flag1 = true
-                                }
-                            }
-                            fatigue_perc_unique.add(fatiguePercentage.toInt())
-                        }
-                        else {
-                            f_0 = medians[0].toFloat()
-                            if (f_0 == 0f) {
-                                counter -= 1
-                            }
-                            Log.d("F0", f_0.toString())
-                            fatigue_perc_unique.add(100)
-                        }
-                        counter += 1
-                        Log.d("counter", "Counter: ${counter}")
 
-                        val halfIndex = med_dataSet.size / 2
-                        med_dataSet =
-                            med_dataSet.subList(halfIndex, med_dataSet.size).toMutableList()
-                        med_lastTimestamp =
-                            (System.currentTimeMillis() - round(deltaTimeSeconds / 2)).toLong()
+                        if (!isCalib) {
+                            try {
+                                // Calcular el porcentaje de fatiga
+                                val fatiguePercentage = signalProcessingUtils.percFatigue(
+                                    medians.average(),
+                                    maxFrec = f_0.toFloat()
+                                )
+                                Log.d("Fatigue Percentage", fatiguePercentage.toString())
+
+                                if (counter != 0f) {
+                                    runOnUiThread {
+                                        fatigueBar.setPercentage(fatiguePercentage.toInt())
+                                        fatigueTxt.text = "Energy: ${fatiguePercentage}%"
+                                        if (fatiguePercentage.toInt() < 50) {
+                                            showAlertDialog2()
+                                            fatigue_flag2 = true
+                                        } else if (fatiguePercentage.toInt() < 75) {
+                                            showAlertDialog()
+                                            fatigue_flag1 = true
+                                        }
+                                    }
+                                    fatigue_perc_unique.add(fatiguePercentage.toInt())
+                                } else {
+                                    f_0 = medians[0].toInt()
+                                    if (f_0 == 0) {
+                                        counter -= 1
+                                    }
+                                    Log.d("F0", f_0.toString())
+                                    fatigue_perc_unique.add(100)
+                                }
+                                counter += 1
+                                Log.d("counter", "Counter: ${counter}")
+
+                                // Actualizar los datos y el tiempo de marca
+                                val halfIndex = med_dataSet.size / 2
+                                med_dataSet =
+                                    med_dataSet.subList(halfIndex, med_dataSet.size).toMutableList()
+                                med_lastTimestamp =
+                                    (System.currentTimeMillis() - round(deltaTimeSeconds / 2)).toLong()
+                            } catch (e: Exception) {
+                                Log.e("Error", "Error processing data: ${e.message}", e)
+                            }
+                        } else {
+
+                            val editor_f = bandera.edit()
+                            editor_f.putBoolean("flag", false)
+                            editor_f.apply()
+
+                            val intent3 = Intent(this@GraphActivity, CalibActivity::class.java)
+                            intent3.putExtra("F0", medians[0].toString())
+                            startActivity(intent3)
+
+                        }
+
                     } catch (e: Exception) {
-                        Log.e("Error", "Error processing data: ${e.message}", e)
+                        Log.e("Error", "Error during initial processing: ${e.message}", e)
                     }
-                }
 
+
+                }
             }
         }
 
-        // Select Bluetooth Device
+
+
+            // Select Bluetooth Device
         buttonConnect.setOnClickListener {
             val intent = Intent(
                 this@GraphActivity,
@@ -358,7 +456,16 @@ class GraphActivity : AppCompatActivity() {
             }
         }
     }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+//    }
 
+
+    private fun lanzarCalibActivity() {
+        val intent = Intent(this, CalibActivity::class.java)
+        calibActivityResultLauncher.launch(intent)
+    }
     private fun checkAndRequestPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
@@ -575,6 +682,7 @@ class GraphActivity : AppCompatActivity() {
 
         private const val CONNECTING_STATUS = 1
         private const val MESSAGE_READ = 2
+
     }
 
     private fun showAlertDialog() {

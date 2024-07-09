@@ -48,6 +48,9 @@
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
+        <activity
+            android:name=".CalibActivity"
+            android:exported="true" />
         <!--
         <activity
             android:name=".ui.login.LoginActivity"

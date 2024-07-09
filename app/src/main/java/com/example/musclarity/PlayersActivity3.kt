@@ -1,6 +1,7 @@
 package com.example.musclarity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -22,12 +23,15 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import java.io.IOException
 import java.util.UUID
+import android.content.SharedPreferences
 import android.content.Context as Context1
 
 class PlayersActivity3 : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
     private var imageDownloadUrl: String = ""
+    lateinit var jugadores: SharedPreferences
+
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +46,7 @@ class PlayersActivity3 : AppCompatActivity() {
         val EditButton: Button = findViewById(R.id.edit_button)
         val DeleteButton: Button = findViewById(R.id.delete_button)
         val uploadButton: TextView = findViewById(R.id.upload_button)
+        val joseboton:Button=findViewById(R.id.joseboton)
         val addButton: Button = findViewById(R.id.add_button)
 
         // Obtener datos del Intent
@@ -92,6 +97,16 @@ class PlayersActivity3 : AppCompatActivity() {
 
         uploadButton.setOnClickListener {
             openGallery()
+        }
+
+        joseboton.setOnClickListener{
+            val sharedPreferences_player = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
+            val editor_player: SharedPreferences.Editor = sharedPreferences_player.edit()
+            editor_player.putString("Player", playerName)
+            editor_player.putBoolean("flag", true)
+            editor_player.apply()
+            val intent2 = Intent(this, CalibActivity::class.java)
+            startActivity(intent2)
         }
 
         EditButton.setOnClickListener{

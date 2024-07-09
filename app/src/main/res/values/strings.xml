@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Musclarity</string>
     <string name="usclarity">USCLARITY</string>
     <string name="log_in">Log In</string>
@@ -35,4 +35,12 @@
         <item>Left Midfield (LM)</item>
         <item>Striker (ST)</item>
     </string-array>
+
+    <string name="step1">• Paso 1: Asegúrese de la correcta adquisición de la señal</string>
+    <string name="step2">• Paso 2: Comienzo de la calibración presionando el botón "Iniciar Calibración"</string>
+    <string name="step3">• Paso 3: Realice una caminata suave de 10-15 segundos</string>
+    <string name="step4">• Paso 4: Realice un sprint a máxima velocidad de 15-20 segundos</string>
+    <string name="step5">• Paso 5: Realice nuevamente una caminata suave de 10-15 segundos</string>
+    <string name="step6">• Paso 6: Finalice la calibración presionando el botón "Finalizar Calibración"</string>
+
 </resources>
