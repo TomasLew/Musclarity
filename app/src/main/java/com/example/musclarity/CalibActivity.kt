@@ -144,14 +144,14 @@ class CalibActivity : AppCompatActivity() {
                             }
 
                         }
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Calibration error. Please try again.",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
 
+            } else {
+                Toast.makeText(
+                    this,
+                    "Calibration error. Please try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 

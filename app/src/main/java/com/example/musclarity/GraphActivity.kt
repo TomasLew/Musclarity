@@ -377,7 +377,7 @@ class GraphActivity : AppCompatActivity() {
                                 if (counter != 0f) {
                                     runOnUiThread {
                                         fatigueBar.setPercentage(fatiguePercentage.toInt())
-                                        fatigueTxt.text = "Energy: ${fatiguePercentage}%"
+                                        fatigueTxt.text = "Energy: ${fatiguePercentage.toInt()}%"
                                         if (fatiguePercentage.toInt() < 50) {
                                             showAlertDialog2()
                                             fatigue_flag2 = true
