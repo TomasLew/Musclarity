@@ -246,7 +246,7 @@ class SquadActivity : AppCompatActivity() {
         val playerName_i = intent.getStringExtra("player_name")
         val playerURL_i = intent.getStringExtra("player_url")
         if (!squadPosition_i.isNullOrBlank()) {
-            Toast.makeText(baseContext, "$squadPosition_i: $playerName_i", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(baseContext, "$squadPosition_i: $playerName_i", Toast.LENGTH_SHORT).show()
 
             val editor = sharedPreferences.edit()
             editor.putString("playerName", playerName_i)

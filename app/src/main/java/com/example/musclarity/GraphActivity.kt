@@ -662,6 +662,10 @@ class GraphActivity : AppCompatActivity() {
             }
         }
     }
+    private fun roundToDecimals(num: Float, decimals: Int): Float {
+        val factor = 10.0.pow(decimals)
+        return (round(num.toDouble() * factor) / factor).toFloat()
+    }
 
     override fun onBackPressed() {
         super.onBackPressed()

@@ -89,7 +89,6 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth = Firebase.auth
         loginButton.setOnClickListener {
             signIn(textEmail.text.toString(), textPass.text.toString())
-            //Toast.makeText(this, "Username: ${textEmail.text.toString()}, Password: ${textPass.text.toString()}", Toast.LENGTH_SHORT).show()
         }
 
         forgotPassword.setOnClickListener {
@@ -101,12 +100,11 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 val user = firebaseAuth.currentUser
-                //Toast.makeText(baseContext, user?.uid.toString(), Toast.LENGTH_SHORT).show()
                 // Acá vamos a ir a la segunda activity
                 val intent = Intent(this, SquadActivity::class.java)
                 startActivity(intent);
             } else {
-                val toast = Toast.makeText(baseContext, "Error de Email y/o Contraseña", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(baseContext, "Email and/or Password Error.", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
@@ -121,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         baseContext,
-                        "Error, the process couldn't be done",
+                        "Error, the process couldn't be done.",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -130,7 +128,7 @@ class LoginActivity : AppCompatActivity() {
         else {
             Toast.makeText(
                 baseContext,
-                "Error, the email is missing",
+                "Error, the Email is missing.",
                 Toast.LENGTH_SHORT
             ).show()
         }

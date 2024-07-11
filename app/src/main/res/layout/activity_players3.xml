@@ -47,13 +47,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/position_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/player_F0" />
 
     <EditText
         android:id="@+id/player_name"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="176dp"
+        android:layout_marginTop="200dp"
         android:background="@drawable/text_input_background"
         android:fontFamily="@font/montserrat"
         android:hint="@string/name"
@@ -68,11 +68,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Logo" />
 
+
     <Spinner
         android:id="@+id/position_spinner"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/text_input_background"
         android:fontFamily="@font/montserrat"
         android:paddingVertical="5dp"
@@ -86,20 +87,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/player_name" />
 
+    <TextView
+        android:id="@+id/player_F0"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/text_input_background"
+        android:fontFamily="@font/montserrat"
+        android:hint="Begin Calibration"
+        android:padding="5dp"
+        android:selectAllOnFocus="true"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/grey"
+        android:textColorHint="@color/grey_hint"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/position_spinner" />
+
     <Button
         android:id="@+id/add_button"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="152dp"
-        android:backgroundTint="@color/logoColor"
-        android:enabled="true"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/logoColor_transparente"
+        android:textColor="@color/myBackgroundColor"
+        android:enabled="false"
         android:fontFamily="@font/montserrat"
         android:text="Add"
-        android:textColor="@color/myBackgroundColor"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/player_img_input"
         app:layout_constraintVertical_bias="0.0" />
@@ -110,26 +130,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="152dp"
+        android:layout_marginTop="40dp"
         android:backgroundTint="@color/logoColor"
         android:enabled="true"
         android:fontFamily="@font/montserrat"
         android:text="Save"
         android:textColor="@color/myBackgroundColor"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/add_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.218"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/add_button"
-        app:layout_constraintTop_toBottomOf="@id/player_img_input"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@id/add_button"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginTop="152dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:backgroundTint="@color/logoColor"
         android:enabled="true"
@@ -137,12 +157,12 @@
         android:text="Delete"
         android:textColor="@color/myBackgroundColor"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/add_button"
         app:layout_constraintEnd_toStartOf="@id/add_button"
-        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/player_img_input"
-        app:layout_constraintVertical_bias="0.009" />
+        app:layout_constraintTop_toTopOf="@id/add_button"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/player_img"
@@ -195,15 +215,24 @@
         app:layout_constraintTop_toBottomOf="@+id/Logo"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <Button
+    <TextView
         android:id="@+id/joseboton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/add_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="+ "
+        android:backgroundTint="@color/logoColor"
+        android:enabled="true"
+        android:textSize="13pt"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:padding="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/player_F0"
+        app:layout_constraintEnd_toEndOf="@+id/player_F0"
+        app:layout_constraintHorizontal_bias="0.99"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player_img_input" />
+        app:layout_constraintTop_toTopOf="@id/player_F0"
+        app:layout_constraintVertical_bias="0.625" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

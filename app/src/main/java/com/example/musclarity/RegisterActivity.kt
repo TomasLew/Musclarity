@@ -145,7 +145,7 @@ class RegisterActivity : AppCompatActivity() {
                 startActivity(intent);
 
             } else {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: Passwords do not match.", Toast.LENGTH_SHORT).show()
                 textPass.requestFocus()
             }
         }
@@ -155,12 +155,12 @@ class RegisterActivity : AppCompatActivity() {
     {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
         if (task.isSuccessful){
-            val toast = Toast.makeText(baseContext, "Cuenta creada correctamente", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(baseContext, "Account created succesfully.", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }
         else {
-            val toast = Toast.makeText(baseContext, "Algo salió mal. Error: " + task.exception, Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(baseContext, "OOPS!\nSomething went wrong.\nError: " + task.exception, Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }

@@ -43,7 +43,7 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
 
         if (posicionSquad.isNullOrBlank()) {
             val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
-            Toast.makeText(baseContext, savedVariable, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(baseContext, savedVariable, Toast.LENGTH_SHORT).show()
         }
         else {
             val editor = sharedPreferences.edit()
@@ -51,7 +51,7 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
             editor.apply()
 
             val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
-            Toast.makeText(baseContext, savedVariable, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(baseContext, savedVariable, Toast.LENGTH_SHORT).show()
         }
 
 
@@ -70,13 +70,13 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
                         for (document in querySnapshot) {
                             val nombre = document.getString("Nombre")
                             val pos = document.getString("Posición")
-                            val F0 = document.getLong("F0")?.toInt()
+                            val F0 = document.getLong("F0")?.toFloat()
                             val url = document.getString("url").toString()
 
                             Log.d("FirebaseData", "Nombre: $nombre, Posición: $pos, URL: $url")
 
                             if (nombre != null && pos != null) {
-                                playerList.add(Player(nombre, pos, url))
+                                playerList.add(Player(nombre, pos, F0, url))
                             }
                         }
                         playerAdapter.notifyDataSetChanged()
@@ -100,6 +100,8 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
 
         addPlayerButton.setOnClickListener {
             val intent = Intent(this, PlayersActivity2::class.java)
+            val savedVariable = sharedPreferences.getString(KEY_VARIABLE, "")
+            intent.putExtra("squad_position", savedVariable)
             startActivity(intent)
         }
 
@@ -118,6 +120,7 @@ class PlayersActivity : AppCompatActivity(), PlayerAdapter.OnItemClickListener {
             intent_edit.putExtra("player_name", myModel.name.toString())
             intent_edit.putExtra("player_position", myModel.position.toString())
             intent_edit.putExtra("url", myModel.url)
+            intent_edit.putExtra("F0",myModel.f0.toString())
             intent_edit.putExtra("squad_position", savedVariable)
             startActivity(intent_edit)
         } else{

@@ -1,10 +1,17 @@
 package com.example.musclarity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
@@ -12,18 +19,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
 class CalibActivity : AppCompatActivity() {
-    lateinit var bandera: SharedPreferences
-
-    companion object {
-        var newActivityHandler: Handler? = null
-    }
-
     var isCalibrating = false
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -33,30 +39,45 @@ class CalibActivity : AppCompatActivity() {
         val backButton: ImageView = findViewById(R.id.button_back)
         val instructionsTextView: TextView = findViewById(R.id.instructions_text)
 
-        val step1 = getString(R.string.step1)
-        val step2 = getString(R.string.step2)
-        val step3 = getString(R.string.step3)
-        val step4 = getString(R.string.step4)
-        val step5 = getString(R.string.step5)
-        val step6 = getString(R.string.step6)
+        val colorLogoColor = ContextCompat.getColor(this, R.color.logoColor)
 
-        val instructions = "$step1\n$step2\n$step3\n$step4\n$step5\n$step6"
+        val step1 = getColorizedSpannable(getString(R.string.paso1)+ ' ' + getString(R.string.step1), getString(R.string.paso1), colorLogoColor)
+        val step2 = getColorizedSpannable(getString(R.string.paso2)+ ' ' + getString(R.string.step2), getString(R.string.paso2), colorLogoColor)
+        val step3 = getColorizedSpannable(getString(R.string.paso3)+ ' ' + getString(R.string.step3), getString(R.string.paso3), colorLogoColor)
+        val step4 = getColorizedSpannable(getString(R.string.paso4)+ ' ' + getString(R.string.step4), getString(R.string.paso4), colorLogoColor)
+        val step5 = getColorizedSpannable(getString(R.string.paso5)+ ' ' + getString(R.string.step5), getString(R.string.paso5), colorLogoColor)
+        val step6 = getColorizedSpannable(getString(R.string.paso6)+ ' ' + getString(R.string.step6), getString(R.string.paso6), colorLogoColor)
+
+        val instructions = SpannableStringBuilder()
+        instructions.append(step1).append("\n\n")
+        instructions.append(step2).append("\n\n")
+        instructions.append(step3).append("\n\n")
+        instructions.append(step4).append("\n\n")
+        instructions.append(step5).append("\n\n")
+        instructions.append(step6)
+
         instructionsTextView.text = instructions
+
 
         val infoPlayers = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
         val playerName: String = infoPlayers.getString("Player", "").toString()
+        val playerPosition: String = infoPlayers.getString("Position", "").toString()
+        val playerUrl: String = infoPlayers.getString("url", "").toString()
+        val f0: String = infoPlayers.getString("F0", "").toString()
+        val squadPosition : String = infoPlayers.getString("squad_position", "").toString()
+
 
         var documentId: String
 
         if (intent.getBooleanExtra("calibrationSuccess", false)) {
-            Toast.makeText(this, "Calibration exitosa", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Successful calibration!", Toast.LENGTH_SHORT).show()
         }
         buttonToggle.setOnClickListener {
             if (!isCalibrating) {
                 isCalibrating = true
 
                 // Mostrar un Toast para verificar que el botón se ha presionado y la preferencia se ha actualizado
-                Toast.makeText(this, "Calibración iniciada: $isCalibrating", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "Calibration started: $isCalibrating", Toast.LENGTH_SHORT)
                     .show()
 
                 val intent2 = Intent(this, GraphActivity::class.java)
@@ -93,23 +114,31 @@ class CalibActivity : AppCompatActivity() {
                                         .addOnSuccessListener {
                                             Toast.makeText(
                                                 this,
-                                                "Calibración exitosa!",
+                                                "Successful calibration!",
                                                 Toast.LENGTH_SHORT
                                             ).show()
+
+                                            val intent_players = Intent(this, PlayersActivity3::class.java)
+                                            intent_players.putExtra("player_name", playerName)
+                                            intent_players.putExtra("player_position", playerPosition)
+                                            intent_players.putExtra("url", playerUrl)
+                                            intent_players.putExtra("F0", F0)
+                                            intent_players.putExtra("squad_position", squadPosition)
+                                            startActivity(intent_players)
                                         }
 
                                         .addOnFailureListener { e ->
                                             // Manejar errores
                                             Toast.makeText(
                                                 this,
-                                                "Error al actualizar F0: ${e}",
+                                                "Data update error: ${e}. Please try again.",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
                                 }
 
                             } else {
-                                Log.e("Error", "Error processing data")
+                                Log.e("Error", "Error processing data. Please try again.")
 
 
                             }
@@ -118,7 +147,7 @@ class CalibActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this,
-                        "F0 registrada es 0, volver a calibrar: $isCalibrating",
+                        "Calibration error. Please try again.",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -131,6 +160,22 @@ class CalibActivity : AppCompatActivity() {
             val intent1 = Intent(this, PlayersActivity::class.java)
             startActivity(intent1)
         }
+        fun getColorizedSpannable(text: String, color: Int): SpannableString {
+            val spannableString = SpannableString(text)
+            spannableString.setSpan(ForegroundColorSpan(color), 0, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            return spannableString
+        }
+    }
+    private fun getColorizedSpannable(fullText: String, partToColor: String, color: Int): SpannableString {
+        val spannableString = SpannableString(fullText)
+        val start = fullText.indexOf(partToColor)
+        val end = start + partToColor.length
+
+        if (start >= 0) {
+            spannableString.setSpan(ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return spannableString
     }
 
 }

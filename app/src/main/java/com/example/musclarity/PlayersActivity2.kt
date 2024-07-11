@@ -1,7 +1,9 @@
 package com.example.musclarity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -137,7 +139,7 @@ class PlayersActivity2 : AppCompatActivity() {
                     db.collection(collectionName)
                         .add(data)
                         .addOnSuccessListener {
-                            Toast.makeText(this,"Registro exitoso",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this,"Succesfull registration.",Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener{e ->
                             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -146,7 +148,7 @@ class PlayersActivity2 : AppCompatActivity() {
                     val intent = Intent(this, PlayersActivity::class.java)
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "Please select a valid position", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Please select a valid position.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -228,7 +230,7 @@ class PlayersActivity2 : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-                Toast.makeText(this, "Error al subir la imagen: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "OOPS!\nError uploading the image:\n${exception.message}", Toast.LENGTH_SHORT).show()
                 callback("") // Llamar al callback con un valor vacío en caso de falla
             }
     }
