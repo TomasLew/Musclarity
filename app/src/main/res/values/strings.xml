@@ -44,7 +44,7 @@
     <string name="paso6"> Paso 6: </string>
 
     <string name="step1"> Asegúrese de la correcta adquisición de la señal.</string>
-    <string name="step2"> Dé comienzo a la calibración presionando el botón "Iniciar Calibración".</string>
+    <string name="step2"> Dé comienzo a la calibración presionando el botón "Calibrate".</string>
     <string name="step3"> Realice una caminata suave de 15-20 segundos.</string>
     <string name="step4"> Realice un sprint a máxima velocidad de 20-30 segundos.</string>
     <string name="step5"> Realice nuevamente una caminata suave de 15-20 segundos.</string>

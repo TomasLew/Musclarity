@@ -73,7 +73,7 @@ class GraphActivity : AppCompatActivity() {
     private val LOW_CUTOFF = 10.0
     private val HIGH_CUTOFF = 120.0
     private val Calib_window=90
-    var f_0 : Int = 0
+    var f_0 : Float = 0f
 
     // Fatigue Bar
     private lateinit var fatigueBar: GradientProgressBar
@@ -152,15 +152,25 @@ class GraphActivity : AppCompatActivity() {
                 .whereEqualTo("Nombre", playerName)
             query.get()
                 .addOnSuccessListener { querySnapshot ->
-                    if (!querySnapshot.isEmpty) {
+                    f_0 = if (!querySnapshot.isEmpty) {
+                        querySnapshot.documents.firstOrNull()?.getLong("F0")?.toFloat() ?: 0f
+                    } else {
+                        0f
+                    }
+
+                    /* if (!querySnapshot.isEmpty) {
                         for (document in querySnapshot.documents) {
-                            f_0 = document.getLong("F0")?.toInt()!!
+                            f_0 = document.getLong("F0")?.toFloat()!!
                         }
                     }
+                    else {
+                        f_0 = 0f
+                    }
+                     */
                 }
         }
 
-        var counter=0f
+        var counter=1f
 
         val fatigueTxt: TextView = findViewById(R.id.fatigue_txt)
         fatigueBar = findViewById(R.id.fatigue_bar)
@@ -182,7 +192,13 @@ class GraphActivity : AppCompatActivity() {
             startActivity(intent1)
         }
 
+        val bandera = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
+        val isCalib: Boolean = bandera.getBoolean("flag", false)
 
+        if (isCalib || f_0 == 0f) {
+            fatigueBar.visibility = View.INVISIBLE
+            fatigueTxt.visibility = View.INVISIBLE
+        }
 
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = intent.getStringExtra("deviceName")
@@ -269,8 +285,6 @@ class GraphActivity : AppCompatActivity() {
                 lineData.notifyDataChanged()
                 mpLineChart.notifyDataSetChanged()
                 mpLineChart.invalidate()
-                //n = 0
-                //x = 0f
             }
 
             fun handleDataProcessing(arduinoMsg: String) {
@@ -331,7 +345,7 @@ class GraphActivity : AppCompatActivity() {
                 val isCalib: Boolean = bandera.getBoolean("flag", false)
                 // Log.d("Esta calibrando jose", "${isCalib}")
 
-                if (isCalib) {
+                if (isCalib || f_0 == 0f) {
                     val prev : Boolean = true
                     Log.d("Se actualiza la ventana","true")
                     ventana = calibWindow
@@ -365,12 +379,12 @@ class GraphActivity : AppCompatActivity() {
                         medians_unique.add(medians[0])
 
 
-                        if (!isCalib) {
+                        if (!isCalib || f_0!=0f) {
                             try {
                                 // Calcular el porcentaje de fatiga
                                 val fatiguePercentage = signalProcessingUtils.percFatigue(
                                     medians.average(),
-                                    maxFrec = f_0.toFloat()
+                                    maxFrec = f_0
                                 )
                                 Log.d("Fatigue Percentage", fatiguePercentage.toString())
 
@@ -387,14 +401,16 @@ class GraphActivity : AppCompatActivity() {
                                         }
                                     }
                                     fatigue_perc_unique.add(fatiguePercentage.toInt())
-                                } else {
+                                }
+                                /*else {
                                     f_0 = medians[0].toInt()
                                     if (f_0 == 0) {
                                         counter -= 1
                                     }
+
                                     Log.d("F0", f_0.toString())
                                     fatigue_perc_unique.add(100)
-                                }
+                                }*/
                                 counter += 1
                                 Log.d("counter", "Counter: ${counter}")
 
