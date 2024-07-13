@@ -67,7 +67,14 @@ class CalibActivity : AppCompatActivity() {
         val squadPosition : String = infoPlayers.getString("squad_position", "").toString()
 
 
+        val sharedPreferences = getSharedPreferences("Graph_Flags", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putBoolean("CalibFlag", isCalibrating)
+        editor.apply()
+
+
         var documentId: String
+
 
         if (intent.getBooleanExtra("calibrationSuccess", false)) {
             Toast.makeText(this, "Successful calibration!", Toast.LENGTH_SHORT).show()
@@ -80,7 +87,11 @@ class CalibActivity : AppCompatActivity() {
                 Toast.makeText(this, "Calibration started: $isCalibrating", Toast.LENGTH_SHORT)
                     .show()
 
+                editor.putBoolean("CalibFlag", isCalibrating)
+                editor.apply()
+
                 val intent2 = Intent(this, GraphActivity::class.java)
+
                 startActivity(intent2)
 
             }
@@ -118,12 +129,14 @@ class CalibActivity : AppCompatActivity() {
                                                 Toast.LENGTH_SHORT
                                             ).show()
 
-                                            val intent_players = Intent(this, PlayersActivity3::class.java)
-                                            intent_players.putExtra("player_name", playerName)
+                                            val intent_players = Intent(this, PlayersActivity::class.java)
+                                            /*intent_players.putExtra("player_name", playerName)
                                             intent_players.putExtra("player_position", playerPosition)
                                             intent_players.putExtra("url", playerUrl)
                                             intent_players.putExtra("F0", F0)
                                             intent_players.putExtra("squad_position", squadPosition)
+                                             */
+
                                             startActivity(intent_players)
                                         }
 
@@ -149,7 +162,7 @@ class CalibActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    "Calibration error. Please try again.",
+                    "Calibration error: Detected Frequency = 0Hz. Please try again.",
                     Toast.LENGTH_SHORT
                 ).show()
             }

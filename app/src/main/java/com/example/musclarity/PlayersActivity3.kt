@@ -72,7 +72,7 @@ class PlayersActivity3 : AppCompatActivity() {
             textName.text = playerName
             if (playerF0?.toDouble()!!.toInt() != 0){
                 var floatF0 = playerF0.toFloat()
-                floatF0 = roundToDecimals(floatF0, 2)
+                //floatF0 = roundToDecimals(floatF0, 2)
                 textF0.text = "Calibration freq.: " + floatF0.toString() + "Hz"
                 flagF0 = true
                 updateButton(flagF0, addButton)

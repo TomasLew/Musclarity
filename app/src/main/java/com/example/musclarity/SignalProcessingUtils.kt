@@ -42,14 +42,14 @@ class SignalProcessingUtils {
 
         // Calcular la potencia total
         val totalPower = powerSpectrum.sum()
-        Log.d("Power", "Total power: ${totalPower}")
+        //Log.d("Power", "Total power: ${totalPower}")
 
         // Calcular la potencia acumulada y encontrar el índice de la frecuencia media
         var cumulativePower = 0.0
         var medianIndex = 0
         for (i in powerSpectrum.indices) {
             cumulativePower += powerSpectrum[i]
-            Log.d("Cum. Power", "Cumulative power: ${cumulativePower}")
+            //Log.d("Cum. Power", "Cumulative power: ${cumulativePower}")
             if (cumulativePower >= totalPower / 2) {
                 medianIndex = i
                 Log.d("Median Frquency", "Median freqr: ${frequencies[medianIndex]*100}")

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -19,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 
 class SquadActivity : AppCompatActivity() {
@@ -26,6 +28,9 @@ class SquadActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private val PREF_NAME = "MyPref"
+    private lateinit var auth: FirebaseAuth
+
+    private var f_0 = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +90,7 @@ class SquadActivity : AppCompatActivity() {
 
         graphButton.setOnClickListener {
             val intent = Intent(this, GraphActivity::class.java)
+            intent.putExtra("F0", f_0)
             startActivity(intent)
         }
 
@@ -307,6 +313,37 @@ class SquadActivity : AppCompatActivity() {
                 Picasso.get().load(playerURL).into(mco)
                 e_mco.visibility = View.VISIBLE
             }
+        }
+
+        auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+
+        if (user != null) {
+            var documentId: String
+            val email = user.email
+            val db = FirebaseFirestore.getInstance()
+            val collectionName = "Jugadores - $email"
+            val col = db.collection(collectionName)
+            val query = col
+                .whereEqualTo("Nombre", playerName)
+            query.get()
+                .addOnSuccessListener { querySnapshot ->
+                    /*f_0 = if (!querySnapshot.isEmpty) {
+                        querySnapshot.documents.firstOrNull()?.getLong("F0")?.toFloat() ?: 0f
+                    } else {
+                        0f
+                    } */
+                    if (!querySnapshot.isEmpty) {
+                        for (document in querySnapshot.documents) {
+                            f_0 = document.getLong("F0")?.toFloat()!!
+                        }
+                    } else {
+                        f_0 = 0f
+                    }
+
+                    Log.d("f_0 graph_activity", "$f_0")
+
+                }
         }
 
         val clearBtn = findViewById<TextView>(R.id.clear_btn)

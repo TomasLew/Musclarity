@@ -72,8 +72,8 @@ class GraphActivity : AppCompatActivity() {
     private val SAMPLE_RATE = 180.0
     private val LOW_CUTOFF = 10.0
     private val HIGH_CUTOFF = 120.0
-    private val Calib_window=90
-    var f_0 : Float = 0f
+    private val Calib_window=60
+    private var f_0 : Float = 0f
 
     // Fatigue Bar
     private lateinit var fatigueBar: GradientProgressBar
@@ -132,17 +132,36 @@ class GraphActivity : AppCompatActivity() {
         mpLineChart.invalidate()
         var n: Int = 0
         var x: Float = 0f
-        val fs: Float = 250f
+        val fs: Float = 180f
         var i: Int = 0
         var t: Float = 0f
         var fatigue: Int = 100
 
-        auth = FirebaseAuth.getInstance()
+        /*auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
-        val infoPlayers = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
-        val playerName: String = infoPlayers.getString("Player", "").toString()
+         */
 
-        if (user != null) {
+        val bandera = getSharedPreferences("Graph_Flags", Context.MODE_PRIVATE)
+        var isCalib: Boolean = bandera.getBoolean("CalibFlag", false)
+
+        val infoPlayers_calib = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
+        val playerName_calib: String = infoPlayers_calib.getString("Player", "").toString()
+
+        val infoPlayers_squad = getSharedPreferences("MyPref", Context.MODE_PRIVATE)
+        val playerName_squad: String = infoPlayers_squad.getString("playerName", "").toString()
+
+        var playerName: String = ""
+
+
+        if (isCalib) {
+            playerName = playerName_calib
+        } else {
+            playerName = playerName_squad
+        }
+
+        Log.d("PlayerName", playerName)
+
+        /*if (user != null) {
             var documentId: String
             val email = user.email
             val db = FirebaseFirestore.getInstance()
@@ -152,23 +171,30 @@ class GraphActivity : AppCompatActivity() {
                 .whereEqualTo("Nombre", playerName)
             query.get()
                 .addOnSuccessListener { querySnapshot ->
-                    f_0 = if (!querySnapshot.isEmpty) {
+                    /*f_0 = if (!querySnapshot.isEmpty) {
                         querySnapshot.documents.firstOrNull()?.getLong("F0")?.toFloat() ?: 0f
                     } else {
                         0f
+                    } */
+                    if (!querySnapshot.isEmpty) {
+                        for (document in querySnapshot.documents) {
+                            f_0_new = document.getLong("F0")?.toFloat()!!
+                        }
+                    } else {
+                        f_0_new = 0f
                     }
 
-                    /* if (!querySnapshot.isEmpty) {
-                        for (document in querySnapshot.documents) {
-                            f_0 = document.getLong("F0")?.toFloat()!!
-                        }
-                    }
-                    else {
-                        f_0 = 0f
-                    }
-                     */
+                    Log.d("f_0 graph_activity", "$f_0_new")
                 }
         }
+
+         else {
+            f_0 = 0f
+        }
+
+         */
+
+        f_0 = intent.getFloatExtra("F0",0f)
 
         var counter=1f
 
@@ -188,16 +214,21 @@ class GraphActivity : AppCompatActivity() {
 
         // Move to squad activity on click
         backButton.setOnClickListener {
+            val editor_f = bandera.edit()
+            editor_f.putBoolean("CalibFlag", false)
+            editor_f.apply()
             val intent1 = Intent(this, SquadActivity::class.java)
             startActivity(intent1)
         }
 
-        val bandera = getSharedPreferences("MyPlayerPref", Context.MODE_PRIVATE)
-        val isCalib: Boolean = bandera.getBoolean("flag", false)
+        Log.d("isCalib; f_0", "$isCalib; $f_0")
 
         if (isCalib || f_0 == 0f) {
             fatigueBar.visibility = View.INVISIBLE
             fatigueTxt.visibility = View.INVISIBLE
+        } else {
+            fatigueBar.visibility = View.VISIBLE
+            fatigueTxt.visibility = View.VISIBLE
         }
 
         // If a bluetooth device has been selected from SelectDeviceActivity
@@ -322,8 +353,7 @@ class GraphActivity : AppCompatActivity() {
                     }
 
                     med_dataSet.add(value.toDouble())
-
-                    processMedianAndFatigue("MyPlayerPref",Calib_window)
+                    processMedianAndFatigue("Graph_Flags",Calib_window)
                 }
 
                 if (lineDataSet.entryCount > 10 * fs) {
@@ -338,19 +368,22 @@ class GraphActivity : AppCompatActivity() {
             }
 
             private fun processMedianAndFatigue(CalibKey: String, calibWindow: Int) {
-                val deltaTimeSeconds = (System.currentTimeMillis() - med_lastTimestamp) / 1000.0
+                var deltaTimeSeconds = (System.currentTimeMillis() - med_lastTimestamp) / 1000.0
                 var ventana = WINDOW_SIZE_SECONDS
 
-                val bandera = getSharedPreferences(CalibKey, Context.MODE_PRIVATE)
-                val isCalib: Boolean = bandera.getBoolean("flag", false)
+                //Log.d("IsCalib","$isCalib")
+
+                //val bandera = getSharedPreferences(CalibKey, Context.MODE_PRIVATE)
+                //val isCalib: Boolean = bandera.getBoolean("Calib_Flag", false)
                 // Log.d("Esta calibrando jose", "${isCalib}")
 
-                if (isCalib || f_0 == 0f) {
+                if (isCalib) {
                     val prev : Boolean = true
-                    Log.d("Se actualiza la ventana","true")
+                    //Log.d("Se actualiza la ventana","$isCalib")
                     ventana = calibWindow
                     fatigueBar.visibility = View.INVISIBLE
                     fatigueTxt.visibility = View.INVISIBLE
+                    f_0=0f
                 }
 
                 if (deltaTimeSeconds >= ventana) {
@@ -378,8 +411,28 @@ class GraphActivity : AppCompatActivity() {
                         )
                         medians_unique.add(medians[0])
 
+                        if (isCalib) {
 
-                        if (!isCalib || f_0!=0f) {
+                            isCalib = false
+                            med_lastTimestamp = (System.currentTimeMillis() - round(deltaTimeSeconds / 2)).toLong()
+                            ventana = WINDOW_SIZE_SECONDS
+
+                            Log.d("F_0", "$isCalib; ${medians[0]}")
+
+                            f_0 = 0f
+
+
+                            val editor_f = bandera.edit()
+                            editor_f.putBoolean("CalibFlag", isCalib)
+                            editor_f.apply()
+
+                            val intent3 = Intent(this@GraphActivity, CalibActivity::class.java)
+                            intent3.putExtra("F0", medians[0].toString())
+                            startActivity(intent3)
+
+                        }
+
+                        if (!isCalib && f_0!=0f) {
                             try {
                                 // Calcular el porcentaje de fatiga
                                 val fatiguePercentage = signalProcessingUtils.percFatigue(
@@ -423,16 +476,6 @@ class GraphActivity : AppCompatActivity() {
                             } catch (e: Exception) {
                                 Log.e("Error", "Error processing data: ${e.message}", e)
                             }
-                        } else {
-
-                            val editor_f = bandera.edit()
-                            editor_f.putBoolean("flag", false)
-                            editor_f.apply()
-
-                            val intent3 = Intent(this@GraphActivity, CalibActivity::class.java)
-                            intent3.putExtra("F0", medians[0].toString())
-                            startActivity(intent3)
-
                         }
 
                     } catch (e: Exception) {
