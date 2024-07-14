@@ -156,39 +156,6 @@ class GraphActivity : AppCompatActivity() {
 
         Log.d("PlayerName", playerName)
 
-        /*if (user != null) {
-            var documentId: String
-            val email = user.email
-            val db = FirebaseFirestore.getInstance()
-            val collectionName = "Jugadores - $email"
-            val col = db.collection(collectionName)
-            val query = col
-                .whereEqualTo("Nombre", playerName)
-            query.get()
-                .addOnSuccessListener { querySnapshot ->
-                    /*f_0 = if (!querySnapshot.isEmpty) {
-                        querySnapshot.documents.firstOrNull()?.getLong("F0")?.toFloat() ?: 0f
-                    } else {
-                        0f
-                    } */
-                    if (!querySnapshot.isEmpty) {
-                        for (document in querySnapshot.documents) {
-                            f_0_new = document.getLong("F0")?.toFloat()!!
-                        }
-                    } else {
-                        f_0_new = 0f
-                    }
-
-                    Log.d("f_0 graph_activity", "$f_0_new")
-                }
-        }
-
-         else {
-            f_0 = 0f
-        }
-
-         */
-
         f_0 = intent.getFloatExtra("F0",0f)
 
         var counter=1f
@@ -438,8 +405,8 @@ class GraphActivity : AppCompatActivity() {
 
                                 val fatigue_global = getSharedPreferences("fatigue perc", Context.MODE_PRIVATE)
                                 val editor_fatigue = fatigue_global.edit()
-                                //editor_fatigue.putString("fatigue", fatiguePercentage.toInt().toString())
-                                editor_fatigue.putString("fatigue", 7.toString())
+                                editor_fatigue.putString("fatigue", fatiguePercentage.toInt().toString())
+                                //editor_fatigue.putString("fatigue", 7.toString())
                                 editor_fatigue.apply()
 
                                 /*val intent_fatigue = Intent(this@GraphActivity, SquadActivity::class.java)

@@ -34,6 +34,30 @@ class SquadActivity : AppCompatActivity() {
     private var f_0 = 0f
     private var fatigue = 100
 
+    private lateinit var e_gk: GradientProgressBar
+    private lateinit var e_dfd: GradientProgressBar
+    private lateinit var e_dfc1: GradientProgressBar
+    private lateinit var e_dfc2: GradientProgressBar
+    private lateinit var e_dfi: GradientProgressBar
+    private lateinit var e_mc1: GradientProgressBar
+    private lateinit var e_mc2: GradientProgressBar
+    private lateinit var e_mco: GradientProgressBar
+    private lateinit var e_mi: GradientProgressBar
+    private lateinit var e_md: GradientProgressBar
+    private lateinit var e_dc: GradientProgressBar
+
+    private lateinit var gk: ImageView
+    private lateinit var dfd: ImageView
+    private lateinit var dfc1: ImageView
+    private lateinit var dfc2: ImageView
+    private lateinit var dfi: ImageView
+    private lateinit var mc1: ImageView
+    private lateinit var mc2: ImageView
+    private lateinit var mco: ImageView
+    private lateinit var mi: ImageView
+    private lateinit var md: ImageView
+    private lateinit var dc: ImageView
+
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
 
@@ -55,55 +79,53 @@ class SquadActivity : AppCompatActivity() {
                 handler.postDelayed(this, 5000)
             }
         }
-        // Inicia el runnable por primera vez
-        handler.post(runnable)
 
         val spinner: Spinner = findViewById(R.id.spinner)
         val logoutButton: ImageView = findViewById(R.id.logout_button)
         val graphButton: ImageView = findViewById(R.id.graph_button)
 
-        val gk = findViewById<ImageView>(R.id.GK)
-        val e_gk = findViewById<GradientProgressBar>(R.id.energy_GK)
+        gk = findViewById<ImageView>(R.id.GK)
+        e_gk = findViewById<GradientProgressBar>(R.id.energy_GK)
         e_gk.visibility = View.INVISIBLE
 
-        val dfd = findViewById<ImageView>(R.id.DFD)
-        val e_dfd = findViewById<GradientProgressBar>(R.id.energy_DFD)
+        dfd = findViewById<ImageView>(R.id.DFD)
+        e_dfd = findViewById<GradientProgressBar>(R.id.energy_DFD)
         e_dfd.visibility = View.INVISIBLE
 
-        val dfc1 = findViewById<ImageView>(R.id.DFC1)
-        val e_dfc1 = findViewById<GradientProgressBar>(R.id.energy_DFC1)
+        dfc1 = findViewById<ImageView>(R.id.DFC1)
+        e_dfc1 = findViewById<GradientProgressBar>(R.id.energy_DFC1)
         e_dfc1.visibility = View.INVISIBLE
 
-        val dfc2 = findViewById<ImageView>(R.id.DFC2)
-        val e_dfc2 = findViewById<GradientProgressBar>(R.id.energy_DFC2)
+        dfc2 = findViewById<ImageView>(R.id.DFC2)
+        e_dfc2 = findViewById<GradientProgressBar>(R.id.energy_DFC2)
         e_dfc2.visibility = View.INVISIBLE
 
-        val dfi = findViewById<ImageView>(R.id.DFI)
-        val e_dfi = findViewById<GradientProgressBar>(R.id.energy_DFI)
+        dfi = findViewById<ImageView>(R.id.DFI)
+        e_dfi = findViewById<GradientProgressBar>(R.id.energy_DFI)
         e_dfi.visibility = View.INVISIBLE
 
-        val mc1 = findViewById<ImageView>(R.id.MC1)
-        val e_mc1 = findViewById<GradientProgressBar>(R.id.energy_MC1)
+        mc1 = findViewById<ImageView>(R.id.MC1)
+        e_mc1 = findViewById<GradientProgressBar>(R.id.energy_MC1)
         e_mc1.visibility = View.INVISIBLE
 
-        val mc2 = findViewById<ImageView>(R.id.MC2)
-        val e_mc2 = findViewById<GradientProgressBar>(R.id.energy_MC2)
+        mc2 = findViewById<ImageView>(R.id.MC2)
+        e_mc2 = findViewById<GradientProgressBar>(R.id.energy_MC2)
         e_mc2.visibility = View.INVISIBLE
 
-        val mco = findViewById<ImageView>(R.id.DC2_MCO)
-        val e_mco = findViewById<GradientProgressBar>(R.id.energy_DC2_MCO)
+        mco = findViewById<ImageView>(R.id.DC2_MCO)
+        e_mco = findViewById<GradientProgressBar>(R.id.energy_DC2_MCO)
         e_mco.visibility = View.INVISIBLE
 
-        val mi = findViewById<ImageView>(R.id.MI)
-        val e_mi = findViewById<GradientProgressBar>(R.id.energy_MI)
+        mi = findViewById<ImageView>(R.id.MI)
+        e_mi = findViewById<GradientProgressBar>(R.id.energy_MI)
         e_mi.visibility = View.INVISIBLE
 
-        val md = findViewById<ImageView>(R.id.MD)
-        val e_md = findViewById<GradientProgressBar>(R.id.energy_MD)
+        md = findViewById<ImageView>(R.id.MD)
+        e_md = findViewById<GradientProgressBar>(R.id.energy_MD)
         e_md.visibility = View.INVISIBLE
 
-        val dc = findViewById<ImageView>(R.id.DC1)
-        val e_dc = findViewById<GradientProgressBar>(R.id.energy_DC1)
+        dc = findViewById<ImageView>(R.id.DC1)
+        e_dc = findViewById<GradientProgressBar>(R.id.energy_DC1)
         e_dc.visibility = View.INVISIBLE
 
         graphButton.setOnClickListener {
@@ -360,6 +382,9 @@ class SquadActivity : AppCompatActivity() {
             }
         }
 
+        // Inicia el runnable por primera vez
+        handler.post(runnable)
+
         auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
@@ -411,7 +436,78 @@ class SquadActivity : AppCompatActivity() {
             fatigue = fatigue_txt.toInt()
         }
 
-        Log.d("MainActivity", "Valor de Fatiga: $fatigue")
+        val squadPosition = sharedPreferences.getString("squadPosition", "")
+        val playerURL = sharedPreferences.getString("playerURL", "")
+
+        if (!squadPosition.isNullOrBlank()) {
+            if (squadPosition.toString() == "gk") {
+                Picasso.get().load(playerURL).into(gk)
+                e_gk.visibility = View.VISIBLE
+                e_gk.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "dfd") {
+                Picasso.get().load(playerURL).into(dfd)
+                e_dfd.visibility = View.VISIBLE
+                e_dfd.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "dfc1") {
+                Picasso.get().load(playerURL).into(dfc1)
+                e_dfc1.visibility = View.VISIBLE
+                e_dfc1.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "dfc2") {
+                Picasso.get().load(playerURL).into(dfc2)
+                e_dfc2.visibility = View.VISIBLE
+                e_dfc2.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "dfi") {
+                Picasso.get().load(playerURL).into(dfi)
+                e_dfi.visibility = View.VISIBLE
+                e_dfi.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "mc2") {
+                Picasso.get().load(playerURL).into(mc2)
+                e_mc2.visibility = View.VISIBLE
+                e_mc2.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "mc1") {
+                Picasso.get().load(playerURL).into(mc1)
+                e_mc1.visibility = View.VISIBLE
+                e_mc1.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "md") {
+                Picasso.get().load(playerURL).into(md)
+                e_md.visibility = View.VISIBLE
+                e_md.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "mi") {
+                Picasso.get().load(playerURL).into(mi)
+                e_mi.visibility = View.VISIBLE
+                e_mi.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "dc") {
+                Picasso.get().load(playerURL).into(dc)
+                e_dc.visibility = View.VISIBLE
+                e_dc.setPercentage(fatigue)
+            }
+
+            if (squadPosition.toString() == "mco") {
+                Picasso.get().load(playerURL).into(mco)
+                e_mco.visibility = View.VISIBLE
+                e_mco.setPercentage(fatigue)
+            }
+
+            Log.d("MainActivity", "Valor de Fatiga: $fatigue")
+        }
     }
 
     override fun onDestroy() {

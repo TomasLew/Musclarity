@@ -301,6 +301,12 @@ class PlayersActivity3 : AppCompatActivity() {
                         }
 
                 }
+                val fatigue_global = getSharedPreferences("fatigue perc", Context.MODE_PRIVATE)
+                val editor_fatigue = fatigue_global.edit()
+                editor_fatigue.putString("fatigue", 100.toString())
+                //editor_fatigue.putString("fatigue", 7.toString())
+                editor_fatigue.apply()
+
                 val intent_back = Intent(this, SquadActivity::class.java)
                 intent_back.putExtra("player_name", newplayerName)
                 intent_back.putExtra("player_url", playerUrl)
