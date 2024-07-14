@@ -263,6 +263,10 @@ class SquadActivity : AppCompatActivity() {
 
         val fatigue_global = getSharedPreferences("fatigue", Context.MODE_PRIVATE)
         val fatigue_txt = fatigue_global.getString("fatigue", "")
+        var fatigue = 100
+        if (!fatigue_txt.isNullOrBlank()) {
+            fatigue = fatigue_txt.toInt()
+        }
 
         val squadPosition = sharedPreferences.getString("squadPosition", "")
         val playerName = sharedPreferences.getString("playerName", "")
@@ -272,89 +276,67 @@ class SquadActivity : AppCompatActivity() {
             if (squadPosition.toString() == "gk") {
                 Picasso.get().load(playerURL).into(gk)
                 e_gk.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_gk.setPercentage(fatigue_txt.toInt())
-                }
+                e_gk.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "dfd") {
                 Picasso.get().load(playerURL).into(dfd)
                 e_dfd.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_dfd.setPercentage(fatigue_txt.toInt())
-                }
+                e_dfd.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "dfc1") {
                 Picasso.get().load(playerURL).into(dfc1)
                 e_dfc1.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_dfc1.setPercentage(fatigue_txt.toInt())
-                }
+                e_dfc1.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "dfc2") {
                 Picasso.get().load(playerURL).into(dfc2)
                 e_dfc2.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_dfc2.setPercentage(fatigue_txt.toInt())
-                }
+                e_dfc2.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "dfi") {
                 Picasso.get().load(playerURL).into(dfi)
                 e_dfi.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_dfi.setPercentage(fatigue_txt.toInt())
-                }
+                e_dfi.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "mc2") {
                 Picasso.get().load(playerURL).into(mc2)
                 e_mc2.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_mc2.setPercentage(fatigue_txt.toInt())
-                }
+                e_mc2.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "mc1") {
                 Picasso.get().load(playerURL).into(mc1)
                 e_mc1.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_mc1.setPercentage(fatigue_txt.toInt())
-                }
+                e_mc1.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "md") {
                 Picasso.get().load(playerURL).into(md)
                 e_md.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_md.setPercentage(fatigue_txt.toInt())
-                }
+                e_md.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "mi") {
                 Picasso.get().load(playerURL).into(mi)
                 e_mi.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_mi.setPercentage(fatigue_txt.toInt())
-                }
+                e_mi.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "dc") {
                 Picasso.get().load(playerURL).into(dc)
                 e_dc.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_dc.setPercentage(fatigue_txt.toInt())
-                }
+                e_dc.setPercentage(fatigue)
             }
 
             if (squadPosition.toString() == "mco") {
                 Picasso.get().load(playerURL).into(mco)
                 e_mco.visibility = View.VISIBLE
-                if (!fatigue_txt.isNullOrBlank()) {
-                    e_mco.setPercentage(fatigue_txt.toInt())
-                }
+                e_mco.setPercentage(fatigue)
             }
         }
 
