@@ -261,7 +261,7 @@ class SquadActivity : AppCompatActivity() {
 
         }
 
-        val fatigue_global = getSharedPreferences("fatigue", Context.MODE_PRIVATE)
+        val fatigue_global = getSharedPreferences("fatigue perc", Context.MODE_PRIVATE)
         val fatigue_txt = fatigue_global.getString("fatigue", "")
         var fatigue = 100
         if (!fatigue_txt.isNullOrBlank()) {

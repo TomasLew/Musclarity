@@ -20,7 +20,7 @@ class SignalProcessingUtils {
             val startIndex = (i * windowSize - (if (i != 0) (windowSize * overlap).toInt() else 0)).coerceAtLeast(0)
             val endIndex = (startIndex + windowSize).coerceAtMost(signal.size)
             val segment = signal.copyOfRange(startIndex, endIndex)
-            Log.d("Window size", "Window size: ${segment.size}")
+            //Log.d("Window size", "Window size: ${segment.size}")
             medians[i] = welch(segment, sampleRate)
         }
 
@@ -50,11 +50,11 @@ class SignalProcessingUtils {
         for (i in powerSpectrum.indices) {
             cumulativePower += powerSpectrum[i]
             //Log.d("Cum. Power", "Cumulative power: ${cumulativePower}")
-            if (cumulativePower >= totalPower / 2) {
+            if (cumulativePower > totalPower / 2) {
                 medianIndex = i
-                Log.d("Median Frquency", "Median freqr: ${frequencies[medianIndex]*100}")
                 break
             }
+            Log.d("Median Frequency", "Median freqr: ${frequencies[medianIndex]*100}")
         }
 
         // Devolver la frecuencia correspondiente al índice de la frecuencia media

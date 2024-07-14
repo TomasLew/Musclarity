@@ -436,10 +436,10 @@ class GraphActivity : AppCompatActivity() {
                                 )
                                 Log.d("Fatigue Percentage", fatiguePercentage.toString())
 
-                                val fatigue_global = getSharedPreferences("fatigue", Context.MODE_PRIVATE)
-                                val editor = fatigue_global.edit()
-                                editor.putString("fatigue", fatiguePercentage.toInt().toString())
-                                editor.apply()
+                                val fatigue_global = getSharedPreferences("fatigue perc", Context.MODE_PRIVATE)
+                                val editor_fatigue = fatigue_global.edit()
+                                editor_fatigue.putString("fatigue", fatiguePercentage.toInt().toString())
+                                editor_fatigue.apply()
 
                                 if (counter != 0f) {
                                     runOnUiThread {
