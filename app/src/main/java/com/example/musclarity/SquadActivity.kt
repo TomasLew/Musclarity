@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -30,6 +32,10 @@ class SquadActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     private var f_0 = 0f
+    private var fatigue = 100
+
+    private lateinit var handler: Handler
+    private lateinit var runnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +44,19 @@ class SquadActivity : AppCompatActivity() {
         firebaseAuth = Firebase.auth
 
         sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+        handler = Handler(Looper.getMainLooper())
+        runnable = object : Runnable {
+            override fun run() {
+                // Llama al método para leer el valor de SharedPreferences
+                readSharedPreferencesValue()
+
+                // Programa la próxima ejecución después de 5 segundos (5000 milisegundos)
+                handler.postDelayed(this, 5000)
+            }
+        }
+        // Inicia el runnable por primera vez
+        handler.post(runnable)
 
         val spinner: Spinner = findViewById(R.id.spinner)
         val logoutButton: ImageView = findViewById(R.id.logout_button)
@@ -263,10 +282,11 @@ class SquadActivity : AppCompatActivity() {
 
         val fatigue_global = getSharedPreferences("fatigue perc", Context.MODE_PRIVATE)
         val fatigue_txt = fatigue_global.getString("fatigue", "")
-        var fatigue = 100
         if (!fatigue_txt.isNullOrBlank()) {
             fatigue = fatigue_txt.toInt()
         }
+
+
 
         val squadPosition = sharedPreferences.getString("squadPosition", "")
         val playerName = sharedPreferences.getString("playerName", "")
@@ -383,6 +403,23 @@ class SquadActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    private fun readSharedPreferencesValue() {
+        val fatigue_global = getSharedPreferences("fatigue perc", Context.MODE_PRIVATE)
+        val fatigue_txt = fatigue_global.getString("fatigue", "")
+        if (!fatigue_txt.isNullOrBlank()) {
+            fatigue = fatigue_txt.toInt()
+        }
+
+        Log.d("MainActivity", "Valor de Fatiga: $fatigue")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Elimina los callbacks pendientes cuando la actividad se destruye
+        handler.removeCallbacks(runnable)
+    }
+
     private fun logOut () {
         firebaseAuth.signOut()
 

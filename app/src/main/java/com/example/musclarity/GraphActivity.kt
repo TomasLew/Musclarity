@@ -438,8 +438,16 @@ class GraphActivity : AppCompatActivity() {
 
                                 val fatigue_global = getSharedPreferences("fatigue perc", Context.MODE_PRIVATE)
                                 val editor_fatigue = fatigue_global.edit()
-                                editor_fatigue.putString("fatigue", fatiguePercentage.toInt().toString())
+                                //editor_fatigue.putString("fatigue", fatiguePercentage.toInt().toString())
+                                editor_fatigue.putString("fatigue", 7.toString())
                                 editor_fatigue.apply()
+
+                                /*val intent_fatigue = Intent(this@GraphActivity, SquadActivity::class.java)
+                                intent_fatigue.putExtra("fatigue", fatiguePercentage.toInt())
+                                startActivity(intent_fatigue)
+                                 */
+
+
 
                                 if (counter != 0f) {
                                     runOnUiThread {
