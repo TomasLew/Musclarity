@@ -54,7 +54,7 @@ class SignalProcessingUtils {
                 medianIndex = i
                 break
             }
-            Log.d("Median Frequency", "Median freqr: ${frequencies[medianIndex]*100}")
+            Log.d("Median Frequency", "Median freqr: ${frequencies[medianIndex]*2500}")
         }
 
         // Devolver la frecuencia correspondiente al índice de la frecuencia media
