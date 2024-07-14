@@ -2,7 +2,6 @@ package com.example.musclarity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
@@ -21,10 +20,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -34,9 +31,7 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -440,6 +435,11 @@ class GraphActivity : AppCompatActivity() {
                                     maxFrec = f_0
                                 )
                                 Log.d("Fatigue Percentage", fatiguePercentage.toString())
+
+                                val fatigue_global = getSharedPreferences("fatigue", Context.MODE_PRIVATE)
+                                val editor = fatigue_global.edit()
+                                editor.putString("fatigue", fatiguePercentage.toString())
+                                editor.apply()
 
                                 if (counter != 0f) {
                                     runOnUiThread {
